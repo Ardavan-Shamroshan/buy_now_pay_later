@@ -1,0 +1,273 @@
+/* Generated for Edge v115.0.1901.183 on Windows
+@font-face {
+    font-family: "Vazir";
+    src: url("https://cdn.fontcdn.ir/Fonts/Vazir/ad3cd4cbda94aee8578c1b622b9002f9dfe345c05870eb375a02da853d08f072.woff2") format("woff2");
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Vazir";
+    src: url("https://cdn.fontcdn.ir/Fonts/Vazir/046a76746039189feb148c360dfb82d07a1e3464d31a2078363587af6f5a1cfb.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Vazir";
+    src: url("https://cdn.fontcdn.ir/Fonts/Vazir/d783603a0dd07db6896ecd8a3460e2256a48dca62373a0478706a05490c1a2d8.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Vazir";
+    src: url("https://cdn.fontcdn.ir/Fonts/Vazir/fc6648da06acebfe96ad5a8f077f569c5c4dd75b77122951723ddfbfeb191728.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Vazir";
+    src: url("https://cdn.fontcdn.ir/Fonts/Vazir/3b2277e82a583c9f91de41aa9e198a14d7ef7f4ccd04828abdd623acd116a88b.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Vazir";
+    src: url("https://cdn.fontcdn.ir/Fonts/Vazir/71671477a4b62305fbd3ed4976a31c3c08520cf914656ece6b79543524a49132.woff2") format("woff2");
+    font-weight: 900;
+    font-style: normal;
+} */
+
+/* CACHED: 2023-07-16T04:00:08+04:30 */
+/* Powered by FontServer.ir */
+
+
+div.wrap {
+    font-family: Vazir, sans-serif;
+}
+
+.nav-tabs {
+    float: right;
+    width: 100%;
+    margin: 1rem 0 0;
+    list-style: none;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-tabs > li {
+    float: right;
+    margin-bottom: -1px;
+}
+
+.nav-tabs > li > a {
+    /*margin-right: 2px;*/
+    line-height: 1.5;
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+    float: right;
+    text-decoration: none;
+}
+
+.nav-tabs > li > a:hover {
+    border-color: #eee #eee #eee;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.tab-content .tab-pane {
+    border: 1px solid #ddd;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-left-radius: 5px;
+    float: right;
+    width: 99%;
+    display: none;
+}
+
+.tab-content > .tab-pane.active {
+    display: block;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 1px 4px -2px rgba(0, 0, 0, 0.15);
+}
+
+.cpt-table {
+    width: 100%;
+    border-spacing: 5px;
+    text-align: right;
+}
+
+.cpt-table,
+.cpt-table th,
+.cpt-table td {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 10px;
+}
+
+.cpt-table th {
+    background-color: #f5f5f5;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+/* Pretty printing styles. Used with prettify.js. */
+/* Vim sunburst theme by David Leibovic */
+
+pre {
+    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important;
+}
+
+pre .str, code .str {
+    color: #65B042;
+}
+
+/* string  - green */
+pre .kwd, code .kwd {
+    color: #E28964;
+}
+
+/* keyword - dark pink */
+pre .com, code .com {
+    color: #AEAEAE;
+    font-style: italic;
+}
+
+/* comment - gray */
+pre .typ, code .typ {
+    color: #89bdff;
+}
+
+/* type - light blue */
+pre .lit, code .lit {
+    color: #3387CC;
+}
+
+/* literal - blue */
+pre .pun, code .pun {
+    color: #fff;
+}
+
+/* punctuation - white */
+pre .pln, code .pln {
+    color: #fff;
+}
+
+/* plaintext - white */
+pre .tag, code .tag {
+    color: #89bdff;
+}
+
+/* html/xml tag    - light blue */
+pre .atn, code .atn {
+    color: #bdb76b;
+}
+
+/* html/xml attribute name  - khaki */
+pre .atv, code .atv {
+    color: #65B042;
+}
+
+/* html/xml attribute value - green */
+pre .dec, code .dec {
+    color: #3387CC;
+}
+
+/* decimal - blue */
+
+pre.prettyprint, code.prettyprint {
+    background-color: #000;
+    border-radius: 8px;
+}
+
+pre.prettyprint {
+    width: 95%;
+    margin: 1em auto;
+    padding: 1em;
+    white-space: pre-wrap;
+}
+
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #AEAEAE;
+}
+
+/* IE indents via margin-left */
+li.L0, li.L1, li.L2, li.L3, li.L5, li.L6, li.L7, li.L8 {
+    list-style-type: none
+}
+
+/* Alternate shading for lines */
+li.L1, li.L3, li.L5, li.L7, li.L9 {
+}
+
+@media print {
+    pre .str, code .str {
+        color: #060;
+    }
+
+    pre .kwd, code .kwd {
+        color: #006;
+        font-weight: bold;
+    }
+
+    pre .com, code .com {
+        color: #600;
+        font-style: italic;
+    }
+
+    pre .typ, code .typ {
+        color: #404;
+        font-weight: bold;
+    }
+
+    pre .lit, code .lit {
+        color: #044;
+    }
+
+    pre .pun, code .pun {
+        color: #440;
+    }
+
+    pre .pln, code .pln {
+        color: #000;
+    }
+
+    pre .tag, code .tag {
+        color: #006;
+        font-weight: bold;
+    }
+
+    pre .atn, code .atn {
+        color: #404;
+    }
+
+    pre .atv, code .atv {
+        color: #060;
+    }
+}
+
