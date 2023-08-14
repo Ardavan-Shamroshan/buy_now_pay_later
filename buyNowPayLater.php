@@ -32,16 +32,18 @@ define( 'BNPL', plugin_basename( __FILE__ ) );
 function activate_buy_now_pay_later() {
 	\Inc\Base\Activate::activate();
 }
+
 register_activation_hook( __FILE__, 'activate_buy_now_pay_later' );
 
 // Plugin on deactivation
 function deactivate_buy_now_pay_later() {
 	\Inc\Base\Deactivate::deactivate();
 }
+
 register_deactivation_hook( __FILE__, 'deactivate_buy_now_pay_later' );
 
 // Initialization
+
 if ( class_exists( 'Inc\Init' ) ) {
 	\Inc\Init::register_services();
 }
-

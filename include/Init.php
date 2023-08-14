@@ -2,6 +2,8 @@
 
 namespace Inc;
 
+use Inc\Controllers\BuyNowPayLaterController;
+
 final class Init {
 	/**
 	 * Loop through the classes, initialize them, and call the register method if exists
@@ -26,7 +28,7 @@ final class Init {
 			Base\Enqueue::class,
 			Base\SettingsLink::class,
 
-			Controllers\BuyNowPayLaterController::class,
+			Controllers\BuyNowPayLaterController::class
 		];
 	}
 
