@@ -34,86 +34,46 @@ function init_themedoni_buy_now_pay_later() {
 
 		public function init_form_fields() {
 			$this->form_fields = apply_filters( 'WC_Gateway_Themedoni_Buy_Now_Pay_Later_Config', [
-					'base_config'     => [
-						'title'       => __( 'تنظیمات درگاه' ),
-						'type'        => 'title',
-						'description' => '',
-					],
-					'enabled'         => [
+					'enabled'        => [
 						'title'       => __( 'فعالسازی/غیرفعالسازی' ),
 						'type'        => 'checkbox',
-						'label'       => __( 'فعالسازی درگاه پرداخت به پرداخت ملت' ),
-						'description' => __( 'برای فعالسازی درگاه به پرداخت ملت باید این قسمت را  را علامتگذاری کنید.' ),
+						'label'       => __( 'فعالسازی درگاه پرداخت اقساطی با چک پیشرفته' ),
+						'description' => __( 'برای فعالسازی درگاه پرداخت اقساطی با چک پیشرفته باید این قسمت را  را علامتگذاری کنید.' ),
 						'default'     => 'yes',
 						'desc_tip'    => true,
 					],
-					'title'           => [
+					'title'          => [
 						'title'       => __( 'عنوان درگاه' ),
 						'type'        => 'text',
 						'description' => __( 'عنوان درگاه که در طول خرید به مشتری نمایش داده می‌شود' ),
-						'default'     => __( 'به پرداخت ملت' ),
+						'default'     => __( ' درگاه پرداخت با چک' ),
 						'desc_tip'    => true,
 					],
-					'description'     => [
+					'description'    => [
 						'title'       => __( 'توضیحات درگاه' ),
 						'type'        => 'text',
 						'desc_tip'    => true,
 						'description' => __( 'توضیحاتی که در طی عملیات پرداخت برای درگاه نمایش داده خواهد شد' ),
-						'default'     => __( 'پرداخت امن از طریق درگاه پرداخت به پرداخت ملت(قابل پرداخت با کلیه کارتهای عضو شتاب)' )
+						'default'     => __( 'پرداخت اقساطی با چک صیادی' )
 					],
-					'account_config'  => [
-						'title'       => __( 'اطلاعات درگاه پرداخت' ),
-						'type'        => 'title',
-						'description' => '',
-					],
-					'terminal_id'     => [
-						'title'       => __( 'شماره ترمینال' ),
-						'type'        => 'text',
-						'description' => __( 'Terminal ID' ),
-						'default'     => '',
-						'desc_tip'    => true
-					],
-					'username'        => [
-						'title'       => __( 'نام کاربری' ),
-						'type'        => 'text',
-						'description' => __( 'Username' ),
-						'default'     => '',
-						'desc_tip'    => true
-					],
-					'password'        => [
-						'title'       => __( 'کلمه عبور' ),
-						'type'        => 'text',
-						'description' => __( 'Password' ),
-						'default'     => '',
-						'desc_tip'    => true
-					],
-					'payment_config'  => [
-						'title'       => __( 'تنظیمات عملیات پرداخت' ),
-						'type'        => 'title',
-						'description' => '',
-					],
-					'order_pay_show'  => [
-						'title'       => __( 'برگه پیش فاکتور' ),
+					'cheque_confirm' => [
+						'title'       => __( 'تایید به نام کردن چک ها' ),
 						'type'        => 'checkbox',
-						'label'       => __( 'نمایش برگه پیش فاکتور' ),
-						'description' => __( 'برای نمایش برگه پیش فاکتور این قسمت را علامتگذاری کنید' ),
+						'label'       => __( 'فعال سازی فیلد تایید' ),
+						'description' => __( 'تایید به نام کردن چک ها' ),
 						'default'     => 'yes',
 						'desc_tip'    => true,
 					],
-					'success_massage' => [
-						'title'       => __( 'پیام پرداخت موفق' ),
-						'type'        => 'textarea',
-						'description' => __( 'متن پیامی که میخواهید بعد از پرداخت موفق به کاربر نمایش دهید را وارد نمایید.
-                                            همچنین می توانید از کدهای کوتاه زیر استفاده کنید:<br/>
-                                            <strong>%Transaction_id%</strong> : کد رهگیری<br/>
-                                            <strong>%Order_Number%</strong> : شماره درخواست تراکنش<br/>' ),
-						'default'     => __( 'پرداخت با موفقیت انجام شد.' ),
+					'min_purchase'   => [
+						'title'       => __( 'حداقل مبلغ سبد خرید' ),
+						'type'        => 'number',
+						'desc_tip'    => true,
+						'description' => __( 'حداقل مبلغ سبد خرید را مشخص کنید' ),
+						'default'     => 0
 					],
-					'failed_massage'  => [
-						'title'       => __( 'پیام پرداخت ناموفق' ),
-						'type'        => 'textarea',
-						'description' => __( 'متن پیامی که میخواهید بعد از پرداخت ناموفق به کاربر نمایش دهید را وارد نمایید . همچنین می توانید از شورت کد %fault% برای نمایش دلیل خطای رخ داده استفاده نمایید . این دلیل خطا از سایت به پرداخت ملت ارسال میگردد .' ),
-						'default'     => __( 'پرداخت با شکست مواجه شد. شرح خطا: %fault%' ),
+					'rules'          => [
+						'title' => __( 'قوانین:' ),
+						'type'  => 'textarea',
 					],
 				]
 			);
