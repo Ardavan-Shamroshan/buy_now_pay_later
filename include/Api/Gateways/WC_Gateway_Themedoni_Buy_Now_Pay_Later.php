@@ -37,7 +37,7 @@ function init_themedoni_buy_now_pay_later() {
 			$this->id                 = 'WC_Gateway_Themedoni_Buy_Now_Pay_Later';
 			$this->method_title       = __( 'پرداخت با چک پیشرفته' );
 			$this->method_description = __( 'پرداخت اقساطی با چک صیادی' );
-			$this->icon               = apply_filters( 'WC_Gateway_Themedoni_Buy_Now_Pay_Later_logo', plugins_url( '/assets/images/logo.png', __FILE__ ) );
+			$this->icon               = apply_filters( 'WC_Gateway_Themedoni_Buy_Now_Pay_Later_logo', BNPL_URL . '/assets/images/cheque_32.png', __FILE__ );
 			$this->has_fields         = true;
 
 			// These are options you’ll show in admin on your gateway settings page and make use of the WC Settings API.
@@ -82,8 +82,10 @@ function init_themedoni_buy_now_pay_later() {
 				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'save_rules' ] );
 				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'save_cheque_conditions' ] );
 				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'save_extra_fields' ] );
-
 			}
+
+			add_action( 'woocommerce_receipt_' . $this->id, [ $this, 'redirect_to_cheque_payment_page' ] );
+			// add_action( 'woocommerce_api_' . strtolower( get_class( $this ) ), [ $this, 'return_from_behpardakht_gateway' ] );
 		}
 
 		public function init_form_fields() {
@@ -111,10 +113,11 @@ function init_themedoni_buy_now_pay_later() {
 						'default'     => __( 'پرداخت اقساطی با چک صیادی' )
 					],
 					'cheque_confirm'    => [
-						'title'       => __( 'تایید به نام کردن چک ها' ),
+						'title'       => __( 'تایید به نام کردن چک' ),
 						'type'        => 'checkbox',
 						'label'       => __( 'فعال سازی فیلد تایید' ),
-						'description' => __( 'تایید به نام کردن چک ها' ),
+						'description' => __( 'یک فیلد تایید ثبت چک ها در زیر فیلد آپلود چک ها اضافه می کند. این گزینه برای اطمینان از
+اینکه مشتریان فرایند ث بت چک ها را انجام داده اند اضافه می شود.' ),
 						'default'     => 'yes',
 						'desc_tip'    => true,
 					],
@@ -122,7 +125,9 @@ function init_themedoni_buy_now_pay_later() {
 						'title'       => __( 'حداقل مبلغ سبد خرید' ),
 						'type'        => 'number',
 						'desc_tip'    => true,
-						'description' => __( 'حداقل مبلغ سبد خرید را مشخص کنید' ),
+						'description' => __( 'در صورتی که مبلغ سبد خرید مشتری از این مبلغ کمتر باشد، درگاه پرداخت با چک در آن
+سفارش نمایش داده نخواهد شد. این گز ینه کمک می کند تا برای مبالغ کم، امکان پر داخت چکی را
+غیرفعال کنید .' ),
 						'default'     => 0
 					],
 					'rules'             => [
@@ -153,7 +158,7 @@ function init_themedoni_buy_now_pay_later() {
                 <td class="forminp">
                     <div class="wc_input_table_wrapper">
 						<?php
-						$content = $this->rules ?? '';
+						$content = html_entity_decode( $this->rules ) ?? '';
 						wp_editor( $content, 'themedoni_bnpl_rules', [
 							'textarea_name' => 'themedoni_bnpl_rules',
 							'textarea_rows' => 10
@@ -168,14 +173,11 @@ function init_themedoni_buy_now_pay_later() {
 		}
 
 		public function save_rules() {
-
 			$rules = '';
 
 			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verification already handled in WC_Admin_Settings::save()
 			if ( isset( $_POST['themedoni_bnpl_rules'] ) ) {
-
-				$rules = wc_clean( wp_unslash( $_POST['themedoni_bnpl_rules'] ) );
-
+				$rules = htmlentities( wpautop( $_POST['themedoni_bnpl_rules'] ) );
 			}
 			// phpcs:enable
 
@@ -408,6 +410,159 @@ function init_themedoni_buy_now_pay_later() {
 
 			do_action( 'woocommerce_update_option', [ 'id' => 'themedoni_buy_now_pay_later_extra_fields' ] );
 			update_option( 'themedoni_buy_now_pay_later_extra_fields', $fields );
+		}
+
+		public function redirect_to_cheque_payment_page() {
+			?>
+
+            <div>
+                <p>قوانین:</p>
+				<?= html_entity_decode( $this->rules ) ?>
+                <div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">
+                    <div class="woocommerce">
+                        <div class="woocommerce-notices-wrapper"></div>
+                        <form name="checkout" method="post" class="checkout woocommerce-checkout" enctype="multipart/form-data">
+                            <div class="col2-set" id="customer_details">
+                                <h3>نوع اقساط</h3>
+                                <div class="woocommerce-checkout-review-order">
+                                    <table class="shop_table woocommerce-checkout-review-order-table">
+                                        <tbody>
+                                        <tr class="order-total">
+                                            <th>مجموع</th>
+                                            <td><strong><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"></span>58.99</bdi></span></strong></td>
+                                        </tr>
+										<?php
+										$i = - 1;
+										if ( $this->cheque_conditions ) {
+											foreach ( $this->cheque_conditions as $field ) {
+												$i ++;
+												echo '<tr>
+                                                    <td style="display: flex">
+                                                    <input type="radio" value="' . esc_attr( $field['condition_name'] ) . '" name="themedoni_bnpl_order_condition_name" id="themedoni_bnpl_order_condition_name[' . esc_attr( $i ) . ']" />
+                                                    <label for="themedoni_bnpl_order_condition_name[' . esc_attr( $i ) . ']">' . esc_attr( $field['condition_name'] ) . '</label>
+                                                    </td>
+                                                </tr>';
+											}
+										}
+										?>
+                                        </tbody>
+                                    </table>
+                                    <table class="shop_table woocommerce-checkout-review-order-table">
+                                        <tbody>
+                                        <tr>
+                                            <th>پیش پرداخت</th>
+                                            <td>209.000</td>
+                                        </tr>
+                                        <tr>
+                                            <th>تعداد چک ها</th>
+                                            <td>3</td>
+                                        </tr>
+                                        <tr>
+                                            <th>مبلغ چک ها</th>
+                                            <td>18,600.000</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="shop_table woocommerce-checkout-review-order-table">
+                                        <tbody>
+                                        <tr>
+                                            <th>مبلغ نهایی</th>
+                                            <td>38,600.000</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                            <div class="col2-set">
+                                <h3 id="order_review_heading">سفارش شما</h3>
+                                <div id="order_review" class="woocommerce-checkout-review-order">
+                                    <table class="shop_table woocommerce-checkout-review-order-table">
+                                        <thead>
+                                        <tr>
+                                            <th class="product-name">محصول</th>
+                                            <th class="product-total">جمع جزء</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="cart_item">
+                                            <td class="product-name">
+                                                Shower Plastic&nbsp; <strong class="product-quantity">&times;&nbsp;1</strong></td>
+                                            <td class="product-total">
+                                                <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>58.99</bdi></span></td>
+                                        </tr>
+                                        </tbody>
+                                        <tfoot>
+                                        <tr class="cart-subtotal">
+                                            <th>جمع جزء</th>
+                                            <td><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>58.99</bdi></span></td>
+                                        </tr>
+                                        <tr class="woocommerce-shipping-totals shipping">
+                                            <th>حمل و نقل</th>
+                                            <td data-title="حمل و نقل">
+                                                <ul id="shipping_method" class="woocommerce-shipping-methods">
+                                                    <li>
+                                                        <input type="hidden" name="shipping_method[0]" data-index="0" id="shipping_method_0_free_shipping1" value="free_shipping:1" class="shipping_method"/><label for="shipping_method_0_free_shipping1">حمل و نقل رایگان</label></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr class="order-total">
+                                            <th>مجموع</th>
+                                            <td><strong><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>58.99</bdi></span></strong></td>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                    <div id="payment" class="woocommerce-checkout-payment">
+                                        <ul class="wc_payment_methods payment_methods methods">
+                                            <li class="wc_payment_method payment_method_WC_Gateway_Themedoni_Buy_Now_Pay_Later">
+                                                <input id="payment_method_WC_Gateway_Themedoni_Buy_Now_Pay_Later" type="radio" class="input-radio" name="payment_method" value="WC_Gateway_Themedoni_Buy_Now_Pay_Later" checked='checked' data-order_button_text=""/></p>
+                                                <p><label for="payment_method_WC_Gateway_Themedoni_Buy_Now_Pay_Later"><br/>
+                                                        درگاه پرداخت با چک <img decoding="async" src="http://localhost/buy-now-pay-later/wp-content/plugins/buy-now-pay-later//assets/images/cheque_32.png" alt="درگاه پرداخت با چک"/> </label></p>
+                                                <div class="payment_box payment_method_WC_Gateway_Themedoni_Buy_Now_Pay_Later">
+                                                    <p>پرداخت اقساطی با چک صیادی</p>
+                                                    </p></div>
+                                            </li>
+                                        </ul>
+                                        <div class="form-row place-order">
+                                            <noscript><br/>
+                                                به دلیل اینکه مرورگر شما جاوا اسکریپت را پشتیبانی نمی کند ، یا غیر فعال است ، لطفا کلیک کنید روی <em>بروزرسانی جمع </em> قبل از اینکه سفارش خود را ثبت کنید.در صورتیکه این کار را نکنید ممکن است مبلغ قابل پرداخت شما بیش از چیزی که در بالا مشخص شده است
+                                                باشد <br/>
+                                                <button type="submit" class="button alt wp-element-button" name="woocommerce_checkout_update_totals" value="به روز رسانی جمع کل">به روز رسانی جمع کل</button>
+                                                <br/>
+                                            </noscript>
+
+                                            <div class="woocommerce-terms-and-conditions-wrapper">
+                                                <div class="woocommerce-privacy-policy-text">
+                                                    <p>اطلاعات شخصی شما برای پردازش سفارش شما، پشتیبانی از تجربه شما در سراسر این وب سایت و برای اهدافی که در <a href="http://localhost/buy-now-pay-later/?page_id=3" class="woocommerce-privacy-policy-link" target="_blank">سیاست حفظ حریم خصوصی</a> ذکر
+                                                        شده است استفاده می شود.</p>
+                                                </div>
+                                            </div>
+                                            <p>
+                                                <button type="submit" class="button alt wp-element-button" name="woocommerce_checkout_place_order" id="place_order" value="ثبت سفارش" data-value="ثبت سفارش">ثبت سفارش</button>
+                                            </p>
+                                            <p><input type="hidden" id="woocommerce-process-checkout-nonce" name="woocommerce-process-checkout-nonce" value="17031b61c1"/><input type="hidden" name="_wp_http_referer" value="/buy-now-pay-later/checkout/"/></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+			<?php
+		}
+
+
+		public function process_payment( $order_id ): array {
+			$order = new WC_Order( $order_id );
+
+			return array(
+				'result'   => 'success',
+				'redirect' => $order->get_checkout_payment_url( true )
+			);
 		}
 	}
 }
