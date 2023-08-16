@@ -11,6 +11,7 @@ function init_themedoni_buy_now_pay_later() {
 
 
 	class WC_Gateway_Themedoni_Buy_Now_Pay_Later extends WC_Payment_Gateway {
+		public $rules;
 
 		/**
 		 * 'condition_name'       => نام شرط,
@@ -46,6 +47,8 @@ function init_themedoni_buy_now_pay_later() {
 			$this->title       = $this->settings['title'];
 			$this->description = $this->settings['description'];
 
+			$this->rules = get_option( 'themedoni_buy_now_pay_later_rules' );
+
 			$this->cheque_conditions = get_option( 'themedoni_buy_now_pay_later_cheque_conditions', [
 					[
 						'condition_name'       => $this->get_option( 'condition_name' ),
@@ -69,12 +72,14 @@ function init_themedoni_buy_now_pay_later() {
 			if ( version_compare( WOOCOMMERCE_VERSION, '2.0.0', '>=' ) ) {
 				add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'process_admin_options' ] );
 
+				add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'save_rules' ] );
 				add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'save_cheque_conditions' ] );
 				add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'save_extra_fields' ] );
 
 			} else {
 				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'process_admin_options' ] );
 
+				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'save_rules' ] );
 				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'save_cheque_conditions' ] );
 				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'save_extra_fields' ] );
 
@@ -121,8 +126,7 @@ function init_themedoni_buy_now_pay_later() {
 						'default'     => 0
 					],
 					'rules'             => [
-						'title' => __( 'قوانین:' ),
-						'type'  => 'textarea',
+						'type' => 'rules',
 					],
 					'cheque_conditions' => [
 						'type' => 'cheque_conditions',
@@ -130,9 +134,9 @@ function init_themedoni_buy_now_pay_later() {
 					'extra_fields'      => [
 						'type' => 'extra_fields',
 					],
-					'success_message'             => [
-						'title' => __( 'پیام ثبت موفقیت:' ),
-						'type'  => 'textarea',
+					'success_message'   => [
+						'title'       => __( 'پیام ثبت موفقیت:' ),
+						'type'        => 'textarea',
 						'description' => __( 'متن پیامی که میخواهید بعد از ثبت موفق به کاربر نمایش دهید را وارد کنید' ),
 					]
 				]
@@ -140,17 +144,56 @@ function init_themedoni_buy_now_pay_later() {
 
 		}
 
+		public function generate_rules_html() {
+			ob_start();
+			?>
+
+            <tr>
+                <th scope="row" class="titledesc"><?php esc_html_e( 'قوانین:', 'themedoni' ); ?></th>
+                <td class="forminp">
+                    <div class="wc_input_table_wrapper">
+						<?php
+						$content = $this->rules ?? '';
+						wp_editor( $content, 'themedoni_bnpl_rules', [
+							'textarea_name' => 'themedoni_bnpl_rules',
+							'textarea_rows' => 10
+						] );
+						?>
+                    </div>
+                </td>
+            </tr>
+
+			<?php
+			return ob_get_clean();
+		}
+
+		public function save_rules() {
+
+			$rules = '';
+
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verification already handled in WC_Admin_Settings::save()
+			if ( isset( $_POST['themedoni_bnpl_rules'] ) ) {
+
+				$rules = wc_clean( wp_unslash( $_POST['themedoni_bnpl_rules'] ) );
+
+			}
+			// phpcs:enable
+
+			do_action( 'woocommerce_update_option', [ 'id' => 'themedoni_buy_now_pay_later_rules' ] );
+			update_option( 'themedoni_buy_now_pay_later_rules', $rules );
+		}
+
+
 		/**
 		 * Generate cheque conditions html.
 		 *
 		 * @return string
 		 */
 		public function generate_cheque_conditions_html() {
-
 			ob_start();
 
 			?>
-            <tr valign="top">
+            <tr>
                 <th scope="row" class="titledesc"><?php esc_html_e( 'شرایط چک ها:', 'themedoni' ); ?></th>
                 <td class="forminp" id="themedoni_bnpl_cheque_condition">
                     <div class="wc_input_table_wrapper">
