@@ -130,6 +130,11 @@ function init_themedoni_buy_now_pay_later() {
 					'extra_fields'      => [
 						'type' => 'extra_fields',
 					],
+					'success_message'             => [
+						'title' => __( 'پیام ثبت موفقیت:' ),
+						'type'  => 'textarea',
+						'description' => __( 'متن پیامی که میخواهید بعد از ثبت موفق به کاربر نمایش دهید را وارد کنید' ),
+					]
 				]
 			);
 
