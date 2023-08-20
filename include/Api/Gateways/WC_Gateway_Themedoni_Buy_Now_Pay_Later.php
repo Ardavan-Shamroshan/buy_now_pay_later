@@ -420,7 +420,6 @@ function init_themedoni_buy_now_pay_later() {
 				$order = new WC_Order( $order_id );
 
 				if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-					// $file             = $_FILES['themedoni_bnpl_cheque_image'];
 					$file             = $_FILES;
 					$wp_upload_path   = wp_upload_dir();
 					$bnpl_upload_path = $wp_upload_path['basedir'] . '/bnpl_uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/';
@@ -432,20 +431,32 @@ function init_themedoni_buy_now_pay_later() {
 
 					$files = [];
 					if ( is_array( $_FILES ) ) {
+
 						foreach ( $_FILES as $file ) {
 							$file_name     = explode( '.', $file['name'] );
 							$new_file_name = rand( 100000000, 9999999999 ) . '.' . $file_name[1];
 							$result        = move_uploaded_file( $file['tmp_name'], $bnpl_upload_path . $new_file_name );
 							$files[]       = $bnpl_upload_url . $new_file_name;
-							update_post_meta( $order_id, 'themedoni_bnpl_cheque', $files );
+							if ( $result ) {
+								update_post_meta( $order_id, 'themedoni_bnpl_cheque', $files );
+							}
 						}
 					} else {
 						$file_name     = explode( '.', $_FILES['name'] );
 						$new_file_name = rand( 100000000, 9999999999 ) . '.' . $file_name[1];
 						$result        = move_uploaded_file( $_FILES['tmp_name'], $bnpl_upload_url . $new_file_name );
 						$files         = $bnpl_upload_url . $new_file_name;
-						update_post_meta( $order_id, 'themedoni_bnpl_cheque', $bnpl_upload_url . $new_file_name );
+						if ( $result ) {
+							update_post_meta( $order_id, 'themedoni_bnpl_cheque', $bnpl_upload_url . $new_file_name );
+						}
 					}
+
+
+					$input = [];
+					foreach ( $this->extra_fields as $extra_field ) {
+						$input[ $extra_field['field_id'] ] = $_POST[ $extra_field['field_id'] ];
+					}
+					update_post_meta( $order_id, 'themedoni_bnpl_extra_fields', $input );
 				}
 			}
 
@@ -456,8 +467,6 @@ function init_themedoni_buy_now_pay_later() {
 
 		public function process_payment( $order_id ) {
 			$order = new WC_Order( $order_id );
-
-			var_dump( 'process_payment' );
 
 			return array(
 				'result'   => 'success',
