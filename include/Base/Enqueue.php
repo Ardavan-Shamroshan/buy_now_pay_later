@@ -13,10 +13,8 @@ class Enqueue extends BaseController {
 	 * Enqueue scripts
 	 */
 	public function enqueue() {
-		// wp_enqueue_script( 'peachCoreCkeditorScript', 'https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js' );
-
 		// enable wp builtin media upload used in MediaWidget.php
-		wp_enqueue_script('media - upload');
+		wp_enqueue_script( 'media-upload' );
 		wp_enqueue_media();
 
 		// override

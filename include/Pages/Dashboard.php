@@ -28,10 +28,10 @@ class Dashboard extends BaseController
 		$this->set_sections();
 		$this->set_fields();
 
-		$this->settings
-			->add_pages($this->pages)
-			->with_subpage('درگاه پرداخت اقساطی')
-			->register();
+		// $this->settings
+		// 	->add_pages($this->pages)
+		// 	->with_subpage('درگاه پرداخت اقساطی')
+		// 	->register();
 	}
 
 	/**

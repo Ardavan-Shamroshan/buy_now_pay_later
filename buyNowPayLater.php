@@ -42,6 +42,7 @@ function deactivate_buy_now_pay_later() {
 
 register_deactivation_hook( __FILE__, 'deactivate_buy_now_pay_later' );
 
+
 // Initialization
 
 if ( class_exists( 'Inc\Init' ) ) {
