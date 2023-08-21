@@ -1,6 +1,5 @@
 <?php
 
-
 function convertPersianToEnglish($number) {
 	$number = str_replace('۰', '0', $number);
 	$number = str_replace('١', '1', $number);

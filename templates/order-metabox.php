@@ -23,34 +23,45 @@ $uploads = wp_upload_dir();
                 </tr>
                 <tr>
                     <td class="label">پیش پرداخت:</td>
-                    <td><?= $order_cheque_condition['prepayment'] ?></td>
+                    <td><?= priceFormat( $order_cheque_condition['prepayment'] ) ?></td>
                 </tr>
                 <tr>
                     <td class="label">اقساط:</td>
-                    <td><?= $order_cheque_condition['installments'] ?></td>
+                    <td><?= convertEnglishToPersian( $order_cheque_condition['installments'] ) ?></td>
                 </tr>
                 <tr>
-                    <td class="label">کارمزد:</td>
-                    <td><?= $order_cheque_condition['commission_rate'] ?></td>
+                    <td class="label">بازپرداخت:</td>
+                    <td><?= convertEnglishToPersian( $order_cheque_condition['term_of_installments'] ) ?></td>
                 </tr>
                 <tr>
-                    <td class="label">مبلغ چک:</td>
-                    <td>2,000,000 تومان</td>
+                    <td class="label">نرخ کارمزد:</td>
+                    <td><?= discountFormat( $order_cheque_condition['commission_rate'] ) ?></td>
                 </tr>
                 <tr>
                     <td class="label">مبلغ نهایی:</td>
-                    <td>24,000,000 تومان</td>
+                    <td>درحال محاسبه</td>
                 </tr>
                 </tbody>
             </table>
             <div class="clear"></div>
 
+			<?php
+			$daysToAdd = $order_cheque_condition['term_of_installments'] / $order_cheque_condition['installments'];
+            $dates = [];
+			for ( $i = 0; $i < $order_cheque_condition['installments']; $i ++ ):
+				$dates[] = date( 'Y-m-d', strtotime( "+$daysToAdd days" ) );
+			endfor;
+			?>
             <table style="margin-top: 1rem;">
                 <tbody>
-                <tr>
-                    <td class="label">تاریخ 1:</td>
-                    <td>7 شهریور 1401</td>
-                </tr>
+
+				<?php foreach ( $dates  as $key => $cheque_date ): ?>
+                    <tr>
+                        <td class="label">تاریخ <?= ++$key ?> :</td>
+                        <td><?= $cheque_date ?></td>
+                    </tr>
+				<?php endforeach; ?>
+
                 </tbody>
             </table>
             <div class="clear"></div>

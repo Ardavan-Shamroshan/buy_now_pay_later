@@ -27,10 +27,7 @@ jQuery(document).ready(function ($) {
             },
             success: function (response) {
                 let today = new Date();
-
-
                 response = JSON.parse(response);
-
                 let daysToAdd = parseInt(response.response.term_of_installments) / parseInt(response.response.installments);
 
                 $('#bnpl_installments_container').empty();
@@ -59,8 +56,6 @@ jQuery(document).ready(function ($) {
                     let mydate = new Date(result);
                     let mypersiandate = mydate.toLocaleDateString('fa-IR');
                     $('<p class="text-base font-semibold leading-7 text-indigo-600"> تاریخ چک ' + toFarsiNumber(++i) + ': </p><p class="font-bold">' + mypersiandate + '</p>').appendTo('#bnpl_cheque_dates');
-
-
                 }
             },
             error: function (error) {
