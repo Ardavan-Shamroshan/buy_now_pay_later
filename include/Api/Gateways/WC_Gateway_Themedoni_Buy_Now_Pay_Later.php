@@ -9,7 +9,6 @@ function init_themedoni_buy_now_pay_later() {
 		return $methods;
 	}
 
-
 	class WC_Gateway_Themedoni_Buy_Now_Pay_Later extends WC_Payment_Gateway {
 		public $rules;
 
@@ -36,7 +35,7 @@ function init_themedoni_buy_now_pay_later() {
 		public function __construct() {
 			$this->id                 = 'WC_Gateway_Themedoni_Buy_Now_Pay_Later';
 			$this->method_title       = __( 'پرداخت با چک پیشرفته' );
-			$this->method_description = __( 'پرداخت اقساطی با چک صیادی' );
+			$this->method_description = __( 'تنظیمات درگاه پرداخت با چک پیشرفته برای افزونه فروشگاه ساز ووکامرس' );
 			$this->icon               = apply_filters( 'WC_Gateway_Themedoni_Buy_Now_Pay_Later_logo', BNPL_URL . '/assets/images/cheque_32.png', __FILE__ );
 			$this->has_fields         = true;
 
@@ -130,6 +129,7 @@ function init_themedoni_buy_now_pay_later() {
 						'description' => __( 'در صورتی که مبلغ سبد خرید مشتری از این مبلغ کمتر باشد، درگاه پرداخت با چک در آن
 سفارش نمایش داده نخواهد شد. این گز ینه کمک می کند تا برای مبالغ کم، امکان پر داخت چکی را
 غیرفعال کنید .' ),
+						'placeholder' => 'تومان',
 						'default'     => 0
 					],
 					'rules'             => [
@@ -331,18 +331,27 @@ function init_themedoni_buy_now_pay_later() {
                             </tr>
                             </thead>
                             <tbody class="accounts">
+
 							<?php
 							$i = - 1;
 							if ( $this->extra_fields ) {
 								foreach ( $this->extra_fields as $field ) {
 									$i ++;
 
-									echo '<tr class="account">
-                                            <td class="sort"></td>
-                                            <td><input type="text" value="' . esc_attr( $field['field_name'] ) . '" name="themedoni_bnpl_field_name[' . esc_attr( $i ) . ']" /></td>
-                                            <td><input type="text" value="' . esc_attr( $field['field_id'] ) . '" name="themedoni_bnpl_field_id[' . esc_attr( $i ) . ']" /></td>
-                                            <td><input type="text" value="' . esc_attr( $field['field_type'] ) . '" name="themedoni_bnpl_field_type[' . esc_attr( $i ) . ']" /></td>
-                                        </tr>';
+									?>
+                                    <tr class="account">
+                                        <td class="sort"></td>
+                                        <td><input type="text" value="<?= esc_attr( $field['field_name'] ) ?>" name="themedoni_bnpl_field_name['<?= esc_attr( $i ) ?>']"/></td>
+                                        <td><input type="text" value="<?= esc_attr( $field['field_id'] ) ?>" name="themedoni_bnpl_field_id['<?= esc_attr( $i ) ?>']"/></td>
+                                        <td>
+                                            <select name="themedoni_bnpl_field_type['<?= esc_attr( $i ) ?>']">
+                                                <option value="text" <?= $field['field_type'] == 'text' ? 'selected' : '' ?>>text</option>
+                                                <option value="number" <?= $field['field_type'] == 'number' ? 'selected' : '' ?>>number</option>
+                                                <option value="file" <?= $field['field_type'] == 'file' ? 'selected' : '' ?>>file</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+									<?php
 								}
 							}
 							?>
