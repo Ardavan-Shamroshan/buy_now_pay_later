@@ -85,8 +85,7 @@ function init_themedoni_buy_now_pay_later() {
 			}
 
 			add_action( 'woocommerce_receipt_' . $this->id, [ $this, 'redirect_to_cheque_payment_page' ] );
-
-			add_action( 'woocommerce_thankyou_' . $this->id, [ $this, 'thankyou_page' ] );
+			add_action( 'woocommerce_thankyou', [ $this, 'return_from_cheque_payment_page' ], 10, 2 );
 
 		}
 
@@ -418,6 +417,7 @@ function init_themedoni_buy_now_pay_later() {
 		public function redirect_to_cheque_payment_page( $order_id ) {
 			if ( isset( $_POST['themedoni_bnpl_submit'] ) ) {
 				$order = new WC_Order( $order_id );
+				global $woocommerce;
 
 				if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 					$file             = $_FILES;
@@ -451,12 +451,19 @@ function init_themedoni_buy_now_pay_later() {
 						}
 					}
 
-
 					$input = [];
 					foreach ( $this->extra_fields as $extra_field ) {
 						$input[ $extra_field['field_id'] ] = $_POST[ $extra_field['field_id'] ];
 					}
 					update_post_meta( $order_id, 'themedoni_bnpl_extra_fields', $input );
+					update_post_meta( $order_id, 'themedoni_bnpl_cheque_condition', $_POST['name'] );
+
+					$order->update_status( 'on-hold', 'در انتظار تایید چک' ); // order note is optional, if you want to  add a note to order
+					$woocommerce->cart->empty_cart();
+
+					// do_action( 'woocommerce_thankyou' );
+
+					return;
 				}
 			}
 
@@ -474,9 +481,13 @@ function init_themedoni_buy_now_pay_later() {
 			);
 		}
 
-		public function thankyou_page() {
-			var_dump( 'thankyou' );
-			exit;
+		public function return_from_cheque_payment_page( $order_id ) {
+
+
+			wp_redirect( home_url() );
+			$order = new WC_Order( $order_id );
+			extract( [ $order ] );
+			include_once BNPL_PATH . 'templates/gateways/cheque-paid-page.php';
 		}
 	}
 }

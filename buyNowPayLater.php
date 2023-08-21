@@ -43,6 +43,20 @@ function deactivate_buy_now_pay_later() {
 register_deactivation_hook( __FILE__, 'deactivate_buy_now_pay_later' );
 
 
+add_filter( 'wc_order_statuses', 'themedoni_bnpl_wc_add_order_statuses' );
+
+// Add New Order Statuses to WooCommerce
+function themedoni_bnpl_wc_add_order_statuses( $order_statuses ) {
+	$new_order_statuses = array();
+	foreach ( $order_statuses as $key => $status ) {
+		$new_order_statuses[ $key ] = $status;
+		if ( 'wc-processing' === $key ) {
+			$new_order_statuses['wc-cheque-progress'] = 'در انتظار تایید چک';
+		}
+	}
+	return $new_order_statuses;
+}
+
 // Initialization
 
 if ( class_exists( 'Inc\Init' ) ) {

@@ -41,7 +41,6 @@ jQuery(document).ready(function ($) {
                     //     '                    </label>').appendTo('#bnpl_installments_container');
                     $('<label class="block mb-2 text-sm font-medium text-gray-900 " for="file_input"></label><input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" id="file_input" name="themedoni_bnpl_cheque_image_' + i + '" type="file">').appendTo('#bnpl_installments_container');
 
-
                     $("#bnpl_prepayment").html(JSON.parse(response.response.prepayment));
                     $("#bnpl_installments").html(JSON.parse(response.response.installments) + ' مورد ');
                     $("#bnpl_commission_rate").html(JSON.parse(response.response.commission_rate));

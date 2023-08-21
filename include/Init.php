@@ -28,7 +28,8 @@ final class Init {
 			Base\Enqueue::class,
 			Base\SettingsLink::class,
 
-			Controllers\BuyNowPayLaterController::class
+			Controllers\BuyNowPayLaterController::class,
+			Controllers\OrderMetaBoxController::class
 		];
 	}
 

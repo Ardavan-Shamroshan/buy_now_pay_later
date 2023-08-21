@@ -2,7 +2,7 @@
 
 add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], null );
-	wp_enqueue_script( 'bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null );
+	// wp_enqueue_script( 'bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null );
 	wp_enqueue_script( 'chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', [ 'jquery' ], null );
 	wp_enqueue_style( 'chequePaymentStyle', BNPL_URL . '/assets/cheque-payment.css', [], null );
 } )

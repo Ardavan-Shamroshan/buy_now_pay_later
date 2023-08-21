@@ -2,7 +2,6 @@
 
 namespace Inc\Controllers;
 
-
 class BuyNowPayLaterController extends BaseController {
 
 	public function register() {
