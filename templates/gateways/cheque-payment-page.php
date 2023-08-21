@@ -2,11 +2,15 @@
 
 add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], null );
-	// wp_enqueue_script( 'bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null );
+	wp_enqueue_script( 'bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null );
 	wp_enqueue_script( 'chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', [ 'jquery' ], null );
 	wp_enqueue_style( 'chequePaymentStyle', BNPL_URL . '/assets/cheque-payment.css', [], null );
-} )
+} );
 
+if ( isset( $_SESSION['message'] ) ) :
+	echo $_SESSION['message'];
+	unset( $_SESSION['message'] );
+endif;
 ?>
 
 <div id="bnpl-container">
@@ -22,7 +26,7 @@ add_action( 'wp_enqueue_scripts', function () {
             <span class="sr-only">Loading...</span>
         </div>
 
-        <div class="lg:pr-4 py-5">
+        <div class="lg:pr-4 py-5" id="rules">
             <p class="text-base font-semibold leading-7 text-indigo-600">قوانین</p>
             <p class="mt-6 text-xl leading-8 text-gray-700"><?= html_entity_decode( $this->rules ) ?></p>
         </div>
@@ -47,22 +51,23 @@ add_action( 'wp_enqueue_scripts', function () {
                         </div>
                         <input id="dropzone-file" type="file" class="hidden"/>
                     </label>
-                     </div>
+                </div>
 
                 <div class="w-full py-2">
 					<?php foreach ( $this->extra_fields as $field ): ?>
                         <label for="<?= $field['field_id'] ?>" class="text-sm font-medium leading-6 text-gray-900"><?= $field['field_name'] ?></label>
-                        <!-- $field['field_type'] -->
                         <div class="my-2">
                             <input type="text" name="<?= $field['field_id'] ?>" id="<?= $field['field_id'] ?>"
-                                   class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                   class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" required>
 
                         </div>
 					<?php endforeach; ?>
                 </div>
 
                 <div class="mt-6 flex items-center justify-end gap-x-2">
-                    <button type="submit" name="themedoni_bnpl_submit" value="themedoni_bnpl_submit" class="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">ارسال</button>
+                    <button type="submit" name="themedoni_bnpl_submit" value="themedoni_bnpl_submit"
+                            class="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">ارسال
+                    </button>
                     <button type="button" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">بازگشت</button>
                 </div>
             </div>
@@ -72,7 +77,7 @@ add_action( 'wp_enqueue_scripts', function () {
                         <div class="border-2 border-gray-100 rounded-lg p-5">
                             <div class="grid w-full gap-6 md:grid-cols-2">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">مبلغ سفارش:</p>
-                                <p class="font-bold"> 69,900,000 تومان</p>
+                                <p class="font-bold"> <?= priceFormat( $order->get_total() ) ?></p>
                             </div>
 
                             <ul class="grid w-full gap-6 md:grid-cols-2">
@@ -106,7 +111,11 @@ add_action( 'wp_enqueue_scripts', function () {
                                 <p class="font-bold" id="bnpl_installments">-</p>
                             </div>
                             <div class="grid w-full gap-6 md:grid-cols-2">
-                                <p class="text-base font-semibold leading-7 text-indigo-600">مبلغ چک ها:</p>
+                                <p class="text-base font-semibold leading-7 text-indigo-600">بازپرداخت:</p>
+                                <p class="font-bold" id="bnpl_term_of_installments">-</p>
+                            </div>
+                            <div class="grid w-full gap-6 md:grid-cols-2">
+                                <p class="text-base font-semibold leading-7 text-indigo-600">نرخ کارمزد:</p>
                                 <p class="font-bold" id="bnpl_commission_rate">-</p>
                             </div>
                             <hr>
@@ -118,11 +127,10 @@ add_action( 'wp_enqueue_scripts', function () {
                     </div>
                     <div class="max-w-xl text-base leading-7 text-gray-700 lg:max-w-lg py-2">
                         <div class="border-2 border-gray-100 rounded-lg p-5">
-                            <div class="grid w-full gap-6 md:grid-cols-2">
-                                <p class="text-base font-semibold leading-7 text-indigo-600">تاریخ چک 1:</p>
-                                <p class="font-bold" id="bnpl_cheque_date">7 شهریور 1402</p>
+                            <div class="grid w-full gap-6 md:grid-cols-2" id="bnpl_cheque_dates">
+                                <p class="text-base font-semibold leading-7 text-indigo-600">تاریخ چک :</p>
+                                <p class="font-bold">-</p>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -130,90 +138,5 @@ add_action( 'wp_enqueue_scripts', function () {
             </div>
         </form>
     </div>
-
-
-    <!--    <div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">-->
-    <!--        <div>-->
-    <!--            <form method="post" action="" enctype="multipart/form-data">-->
-    <!--                <div class="col2-set">-->
-    <!--                    <div class="woocommerce-checkout-review-order">-->
-    <!--                        <div>-->
-    <!--                            <h3 class="text-rose-900">تصاویر چک</h3>-->
-    <!--                            <div id="bnpl_installments_container"></div>-->
-    <!--                            <div>-->
-    <!--                                <h3>فیلد های ضروری</h3>-->
-    <!---->
-    <!--								--><?php //foreach ( $this->extra_fields as $field ): ?>
-    <!--                                    <div>-->
-    <!--                                        <label for="--><?php //= $field['field_id'] ?><!--">--><?php //= $field['field_name'] ?><!--</label>-->
-    <!--                                        <!-- $field['field_type'] -->-->
-    <!--                                        <input type="text" name="--><?php //= $field['field_id'] ?><!--" id="--><?php //= $field['field_id'] ?><!--">-->
-    <!--                                    </div>-->
-    <!--								--><?php //endforeach; ?>
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!---->
-    <!--                    <button name="themedoni_bnpl_submit" type="submit">ارسال</button>-->
-    <!--                </div>-->
-    <!--                <div class="col2-set">-->
-    <!--                    <h3>نوع اقساط</h3>-->
-    <!--                    <div class="woocommerce-checkout-review-order">-->
-    <!--                        <table class="shop_table woocommerce-checkout-review-order-table">-->
-    <!--                            <tbody>-->
-    <!--                            <tr class="order-total">-->
-    <!--                                <th>مجموع</th>-->
-    <!--                                <td><strong><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"></span>58.99</bdi></span></strong></td>-->
-    <!--                            </tr>-->
-    <!--							--><?php
-	// 							$i = - 1;
-	// 							if ( $this->cheque_conditions ) {
-	// 								foreach ( $this->cheque_conditions as $condition ) {
-	// 									$i ++;
-	// 									?>
-    <!--                                    <tr>-->
-    <!--                                        <td style="display: flex">-->
-    <!--                                            <input type="radio" value="--><?php //= esc_attr( $condition['condition_name'] ) ?><!--" name="themedoni_bnpl_order_condition_name" id="themedoni_bnpl_order_condition_name[--><?php //= esc_attr( $i ) ?><!--]"/>-->
-    <!--                                            <label for="themedoni_bnpl_order_condition_name[--><?php //= esc_attr( $i ) ?><!--]">--><?php //= esc_attr( $condition['condition_name'] ) ?><!--</label>-->
-    <!--                                        </td>-->
-    <!--                                    </tr>-->
-    <!--									--><?php
-	// 								}
-	// 							}
-	// 							?>
-    <!--                            </tbody>-->
-    <!--                        </table>-->
-    <!--                        <table class="shop_table woocommerce-checkout-review-order-table">-->
-    <!--                            <tbody>-->
-    <!--                            <tr>-->
-    <!--                                <th>پیش پرداخت</th>-->
-    <!--                                <td id="bnpl_prepayment">0</td>-->
-    <!--                            </tr>-->
-    <!--                            <tr>-->
-    <!--                                <th>تعداد چک ها</th>-->
-    <!--                                <td id="bnpl_installments">0</td>-->
-    <!--                            </tr>-->
-    <!--                            <tr>-->
-    <!--                                <th>مبلغ چک ها</th>-->
-    <!--                                <td id="bnpl_commission_rate">0</td>-->
-    <!--                            </tr>-->
-    <!--                            </tbody>-->
-    <!--                        </table>-->
-    <!---->
-    <!--                        <table class="shop_table woocommerce-checkout-review-order-table">-->
-    <!--                            <tbody>-->
-    <!--                            <tr>-->
-    <!--                                <th>مبلغ نهایی</th>-->
-    <!--                                <td id="bnpl_final_price">0</td>-->
-    <!--                            </tr>-->
-    <!--                            </tbody>-->
-    <!--                        </table>-->
-    <!--                    </div>-->
-    <!---->
-    <!--                </div>-->
-    <!---->
-    <!--            </form>-->
-    <!--        </div>-->
-    <!--    </div>-->
 </div>
 
