@@ -9,7 +9,7 @@ add_action( 'wp_enqueue_scripts', function () {
 	// wp_enqueue_style( 'chequePaymentStyle' );
 	wp_enqueue_script( 'chequePaymentScript' );
 	// wp_enqueue_script( 'bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null );
-} );
+}, 999 );
 
 ?>
 
