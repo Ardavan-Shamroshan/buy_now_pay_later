@@ -15,7 +15,7 @@ $uploads = wp_upload_dir();
     <div style="width: 30%;border: 1px solid #e8e8e8;border-radius: 3px; padding: 0.5rem">
         <h4>اطلاعات چک ها</h4>
         <div>
-            <table style="margin-top: 1rem;">
+            <table style="width:100%;margin-top: 1rem;">
                 <tbody>
                 <tr>
                     <td class="label">نام شرط:</td>
@@ -47,17 +47,17 @@ $uploads = wp_upload_dir();
 
 			<?php
 			$daysToAdd = $order_cheque_condition['term_of_installments'] / $order_cheque_condition['installments'];
-            $dates = [];
+			$dates     = [];
 			for ( $i = 0; $i < $order_cheque_condition['installments']; $i ++ ):
 				$dates[] = date( 'Y-m-d', strtotime( "+$daysToAdd days" ) );
 			endfor;
 			?>
-            <table style="margin-top: 1rem;">
+            <table style="width:100%;margin-top: 1rem;">
                 <tbody>
 
-				<?php foreach ( $dates  as $key => $cheque_date ): ?>
+				<?php foreach ( $dates as $key => $cheque_date ): ?>
                     <tr>
-                        <td class="label">تاریخ <?= ++$key ?> :</td>
+                        <td class="label">تاریخ <?= ++ $key ?> :</td>
                         <td><?= $cheque_date ?></td>
                     </tr>
 				<?php endforeach; ?>
@@ -66,13 +66,19 @@ $uploads = wp_upload_dir();
             </table>
             <div class="clear"></div>
 			<?php if ( $extra_fields ): ?>
-                <table style="margin-top: 1rem;">
+                <table style="width:100%;margin-top: 1rem;">
                     <tbody>
 
 					<?php foreach ( $extra_fields as $extra_field ): ?>
                         <tr>
                             <td class="label"><?= $extra_field['field_name'] ?>:</td>
-                            <td><?= $order_extra_fields_value[ $extra_field['field_id'] ] ?></td>
+							<?php if ( $extra_field['field_type'] == 'file' ): ?>
+                                <td>
+                                    <img src="<?= esc_url( $uploads['baseurl'] . $order_extra_fields_value[ $extra_field['field_id'] ] ) ?>" alt="<?= $extra_field['field_name'] ?>" style="width: 100%;;margin: 0.3rem 0;border: 1px solid #0f0f0f">
+                                </td>
+							<?php else: ?>
+                                <td><?= $order_extra_fields_value[ $extra_field['field_id'] ] ?></td>
+							<?php endif; ?>
                         </tr>
 					<?php endforeach; ?>
 
