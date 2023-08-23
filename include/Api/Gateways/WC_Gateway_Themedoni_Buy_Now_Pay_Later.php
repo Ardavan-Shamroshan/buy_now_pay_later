@@ -434,23 +434,32 @@ function init_themedoni_buy_now_pay_later() {
 					$bnpl_upload_path = $wp_upload_path['basedir'] . '/bnpl_uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/';
 					$bnpl_upload_url  = '/bnpl_uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/';
 
-					$input = [];
-					foreach ( $this->extra_fields as $extra_field ) {
-						// if ( empty( $_POST[ $extra_field['field_id'] ] ) ) {
-						// 	session_start();
-						// 	$_SESSION['message'] = __( $_POST[ $extra_field['field_id'] ] . 'الزامی است' );
-						//
-						// }
-						$input[ $extra_field['field_id'] ] = $_POST[ $extra_field['field_id'] ];
-					}
-					update_post_meta( $order_id, 'themedoni_bnpl_extra_fields', $input );
-					update_post_meta( $order_id, 'themedoni_bnpl_cheque_condition', $_POST['name'] );
-
-
 					if ( ! file_exists( $bnpl_upload_path ) ) {
 						wp_mkdir_p( $bnpl_upload_path );
 					}
 
+					$input = [];
+					foreach ( $this->extra_fields as $extra_field ) {
+						$input[ $extra_field['field_id'] ] = $_POST[ $extra_field['field_id'] ];
+
+						// if extra field has an input:file
+						if ( $extra_field['field_type'] == 'file' ) {
+							if ( isset( $_FILES ) && $_FILES[ $extra_field['field_id'] ] ) {
+								$file_name     = explode( '.', $_FILES[ $extra_field['field_id'] ]['name'] );
+								$new_file_name = rand( 100000000, 9999999999 ) . '.' . $file_name[1];
+								$result        = move_uploaded_file( $_FILES[ $extra_field['field_id'] ]['tmp_name'], $bnpl_upload_path . $new_file_name );
+								if ( $result ) {
+									$input[ $extra_field['field_id'] ] = $bnpl_upload_url . $new_file_name;
+								}
+							}
+						}
+
+					}
+
+					update_post_meta( $order_id, 'themedoni_bnpl_extra_fields', $input );
+					update_post_meta( $order_id, 'themedoni_bnpl_cheque_condition', $_POST['name'] );
+
+					// upload cheque images
 					if ( is_array( $_FILES ) ) {
 						foreach ( $_FILES as $file ) {
 							$file_name     = explode( '.', $file['name'] );
@@ -473,7 +482,6 @@ function init_themedoni_buy_now_pay_later() {
 					$order->update_status( 'on-hold', 'در انتظار تایید چک' ); // order note is optional, if you want to  add a note to order
 					$woocommerce->cart->empty_cart();
 
-					// do_action( 'woocommerce_thankyou' );
 					return;
 				}
 			}
