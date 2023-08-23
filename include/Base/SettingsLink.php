@@ -10,7 +10,7 @@ class SettingsLink extends BaseController {
 	}
 
 	public function settings_link( $links ) {
-		$settings_link = "<a href='&section=wc_gateway_themedoni_buy_now_pay_later'>تنظیمات</a>";
+		$settings_link = "<a href='admin.php?page=wc-settings&tab=checkout&section=wc_gateway_themedoni_buy_now_pay_later'>تنظیمات</a>";
 		$links[]       = $settings_link;
 
 		return $links;
