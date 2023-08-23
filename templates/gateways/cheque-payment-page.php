@@ -1,10 +1,14 @@
 <?php
 
 add_action( 'wp_enqueue_scripts', function () {
-	wp_enqueue_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], null );
-	wp_enqueue_script( 'bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null );
-	wp_enqueue_script( 'chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', [ 'jquery' ], null );
-	wp_enqueue_style( 'chequePaymentStyle', BNPL_URL . '/assets/cheque-payment.css', [], null );
+	wp_register_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], null );
+	// wp_register_style( 'chequePaymentStyle', BNPL_URL . '/assets/cheque-payment.css', [], null );
+	wp_register_script( 'chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', [ 'jquery' ], null );
+
+	wp_enqueue_style( 'bnplTailwindCss' );
+	// wp_enqueue_style( 'chequePaymentStyle' );
+	wp_enqueue_script( 'chequePaymentScript' );
+	// wp_enqueue_script( 'bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null );
 } );
 
 if ( isset( $_SESSION['message'] ) ) :

@@ -65,7 +65,6 @@ $uploads = wp_upload_dir();
                 </tbody>
             </table>
             <div class="clear"></div>
-
 			<?php if ( $extra_fields ): ?>
                 <table style="margin-top: 1rem;">
                     <tbody>
@@ -81,7 +80,6 @@ $uploads = wp_upload_dir();
                 </table>
                 <div class="clear"></div>
 			<?php endif; ?>
-
         </div>
     </div>
 
@@ -89,7 +87,6 @@ $uploads = wp_upload_dir();
         <h4>تصاویر چک ها</h4>
 		<?php foreach ( $order_cheques as $cheque ): ?>
             <img src="<?= esc_url( $uploads['baseurl'] . $cheque ) ?>" alt="<?= $cheque ?>" style="width: 100%;;margin: 0.3rem 0;border: 1px solid #0f0f0f">
-
 		<?php endforeach; ?>
     </div>
 </div>
