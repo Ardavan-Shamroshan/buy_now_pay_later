@@ -486,9 +486,19 @@ function init_themedoni_buy_now_pay_later() {
 				}
 			}
 
+			add_action( 'wp_enqueue_scripts', [ $this, 'wp_enqueue_scripts_callback' ], 1 );
 
 			extract( [ $this->rules, $this->cheque_conditions, $this->extra_fields ] );
 			include_once BNPL_PATH . 'templates/gateways/cheque-payment-page.php';
+		}
+
+		public function wp_enqueue_scripts_callback() {
+			wp_register_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [ 'tailwindcss' ], BuyNowPayLaterVersion );
+			wp_register_script( 'chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', [ 'jquery' ], BuyNowPayLaterVersion );
+
+			wp_enqueue_style( 'bnplTailwindCss' );
+			wp_enqueue_script( 'chequePaymentScript' );
+			// wp_enqueue_script( 'bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null );
 		}
 
 		public function process_payment( $order_id ) {

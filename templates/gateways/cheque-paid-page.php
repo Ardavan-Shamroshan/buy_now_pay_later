@@ -1,9 +1,9 @@
 <?php
 
 add_action( 'wp_enqueue_scripts', function () {
-	wp_register_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], null );
+	wp_register_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', ['tailwindcss'], BuyNowPayLaterVersion );
 	// wp_register_style( 'chequePaymentStyle', BNPL_URL . '/assets/cheque-payment.css', [], null );
-	wp_register_script( 'chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', [ 'jquery' ], null );
+	wp_register_script( 'chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', [ 'jquery' ], BuyNowPayLaterVersion );
 
 	wp_enqueue_style( 'bnplTailwindCss' );
 	// wp_enqueue_style( 'chequePaymentStyle' );

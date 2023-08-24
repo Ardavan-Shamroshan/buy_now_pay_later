@@ -72,12 +72,16 @@ $uploads = wp_upload_dir();
 					<?php foreach ( $extra_fields as $extra_field ): ?>
                         <tr>
                             <td class="label"><?= $extra_field['field_name'] ?>:</td>
-							<?php if ( $extra_field['field_type'] == 'file' ): ?>
+							<?php if ( $extra_field['field_type'] == 'file' && ! empty( $order_extra_fields_value[ $extra_field['field_id'] ] ) ): ?>
                                 <td>
                                     <img src="<?= esc_url( $uploads['baseurl'] . $order_extra_fields_value[ $extra_field['field_id'] ] ) ?>" alt="<?= $extra_field['field_name'] ?>" style="width: 100%;;margin: 0.3rem 0;border: 1px solid #0f0f0f">
                                 </td>
 							<?php else: ?>
-                                <td><?= $order_extra_fields_value[ $extra_field['field_id'] ] ?></td>
+								<?php if ( ! empty( $order_extra_fields_value[ $extra_field['field_id'] ] ) ): ?>
+                                    <td><?= $order_extra_fields_value[ $extra_field['field_id'] ] ?></td>
+								<?php else: ?>
+                                    <td style="color: #999">موردی وجود ندارد</td>
+								<?php endif; ?>
 							<?php endif; ?>
                         </tr>
 					<?php endforeach; ?>
@@ -91,9 +95,13 @@ $uploads = wp_upload_dir();
 
     <div style="width: 70%;border: 1px solid #e8e8e8;;border-radius: 3px; padding: 0.5rem;">
         <h4>تصاویر چک ها</h4>
-		<?php foreach ( $order_cheques as $cheque ): ?>
-            <img src="<?= esc_url( $uploads['baseurl'] . $cheque ) ?>" alt="<?= $cheque ?>" style="width: 100%;;margin: 0.3rem 0;border: 1px solid #0f0f0f">
-		<?php endforeach; ?>
+		<?php if ( ! empty( $order_cheques ) ):
+			foreach ( $order_cheques as $cheque ): ?>
+                <img src="<?= esc_url( $uploads['baseurl'] . $cheque ) ?>" alt="<?= $cheque ?>" style="width: 100%;;margin: 0.3rem 0;border: 1px solid #0f0f0f">
+			<?php endforeach; ?>
+		<?php else: ?>
+            <h3 style="color: #999">موردی وجود ندارد</h3>
+		<?php endif; ?>
     </div>
 </div>
 
