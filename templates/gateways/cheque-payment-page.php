@@ -2,6 +2,14 @@
 
 add_action( 'wp_enqueue_scripts', 'wp_enqueue_scripts_callback' );
 
+add_action( "wp_ajax_bnpl_get_data", function () {
+	wp_localize_script(
+		'bnpl_get_data',
+		'ajax_script',
+		array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+} ); // function in ajax.php
+
+
 function wp_enqueue_scripts_callback() {
 	wp_register_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], BuyNowPayLaterVersion );
 	wp_register_script( 'chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', [ 'jquery' ], BuyNowPayLaterVersion );
@@ -14,6 +22,7 @@ function wp_enqueue_scripts_callback() {
 ?>
 
 <div id="bnpl-container">
+    <input type="hidden" name="themedoni_bnpl_order_total" value="<?= $order->get_total() ?>">
     <div class="relative isolate overflow-hidden bg-white px-6 py-5 lg:overflow-visible lg:px-0">
 
         <div id="loader" role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2 hidden">

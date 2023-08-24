@@ -57,7 +57,8 @@ function bnpl_get_term_of_installment() {
 
 	echo json_encode( [
 		'status'   => 'success',
-		'response' => $installments[ $key ] ?? []
+		'response' => $installments[ $key ] ?? [],
+		'order_total' => $_POST['orderTotal']
 	] );
 	die;
 }

@@ -1,5 +1,7 @@
 jQuery(document).ready(function ($) {
-    $('#bnpl-container #rules ul').addClass('list-disc text-slate-500')
+    let order_total = $('input[name="themedoni_bnpl_order_total"]').val();
+    $('#bnpl-container #rules ul').addClass('list-disc text-slate-500');
+
     $('input[name="themedoni_bnpl_order_condition_name"]').on('click', function () {
         let installment_name = $('input[name="themedoni_bnpl_order_condition_name"]:checked').val();
 
@@ -14,20 +16,22 @@ jQuery(document).ready(function ($) {
             });
 
 
-        handleAjax(installment_name);
+        handleAjax(installment_name, order_total);
     });
 
-    function handleAjax(installment_name) {
+    function handleAjax(installment_name, order_total) {
         $.ajax({
             type: "post",
-            url: '//localhost/buy-now-pay-later/wp-admin/admin-ajax.php',
+            url: '/buy-now-pay-later/wp-admin/admin-ajax.php',
             data: {
                 action: 'bnpl_get_data',
-                name: installment_name
+                name: installment_name,
+                orderTotal: order_total,
             },
             success: function (response) {
                 let today = new Date();
                 response = JSON.parse(response);
+                console.log(response);
                 let daysToAdd = parseInt(response.response.term_of_installments) / parseInt(response.response.installments);
 
                 $('#bnpl_installments_container').empty();
@@ -46,11 +50,14 @@ jQuery(document).ready(function ($) {
                         '<input id="dropzone-file" type="file" name="themedoni_bnpl_cheque_image_' + i + '" class="hidden" required/>\n' +
                         '</label>').appendTo('#bnpl_installments_container');
 
-                    $("#bnpl_prepayment").html(insertrialcamma(toFarsiNumber(JSON.parse(response.response.prepayment))) + ' تومان');
+                    $("#bnpl_prepayment").html(insertrialcamma(toFarsiNumber(JSON.parse(response.response.prepayment))) + ' %');
                     $("#bnpl_installments").html(toFarsiNumber(JSON.parse(response.response.installments)) + ' مورد ');
                     $("#bnpl_term_of_installments").html(toFarsiNumber(JSON.parse(response.response.term_of_installments)) + ' روز ');
                     $("#bnpl_commission_rate").html(toFarsiNumber(JSON.parse(response.response.commission_rate)) + ' % ');
-                    $("#bnpl_final_price").html('درحال محاسبه');
+
+
+                    gateway_calculator(response);
+                    $("#bnpl_final_price").html(insertrialcamma(toFarsiNumber(gateway_calculator(response))) + ' تومان ');
 
                     let result = today.setDate(today.getDate() + daysToAdd);
                     let mydate = new Date(result);
@@ -65,6 +72,22 @@ jQuery(document).ready(function ($) {
                 console.log(error)
             },
         });
+    }
+
+    function gateway_calculator(response) {
+        let prepayment = response.response.prepayment;
+        let installments = response.response.installments;
+        let commission_rate = response.response.commission_rate;
+        let order_total = response.order_total;
+
+
+        let prepayment_price = order_total * (prepayment / 100);
+        let remained = order_total - prepayment_price;
+        let commission_price = remained * (commission_rate / 100);
+        let remained_with_commission_price = remained + commission_price;
+        let every_installment_price = remained_with_commission_price / installments;
+
+        return Math.floor(remained_with_commission_price + prepayment_price);
     }
 
 
