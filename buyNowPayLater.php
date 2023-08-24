@@ -42,24 +42,27 @@ function deactivate_buy_now_pay_later() {
 
 register_deactivation_hook( __FILE__, 'deactivate_buy_now_pay_later' );
 
+// action hooks
+add_action( 'plugins_loaded', 'init_themedoni_buy_now_pay_later' );
 
-add_filter( 'wc_order_statuses', 'themedoni_bnpl_wc_add_order_statuses' );
+add_action( 'wp_ajax_bnpl_get_data', 'bnpl_get_term_of_installment' );
 
-// Add New Order Statuses to WooCommerce
-function themedoni_bnpl_wc_add_order_statuses( $order_statuses ) {
-	$new_order_statuses = array();
-	foreach ( $order_statuses as $key => $status ) {
-		$new_order_statuses[ $key ] = $status;
-		if ( 'wc-processing' === $key ) {
-			$new_order_statuses['wc-cheque-progress'] = 'در انتظار تایید چک';
-		}
-	}
+function bnpl_get_term_of_installment() {
+	$installment_name = $_POST['name'];
 
-	return $new_order_statuses;
+	$installments = get_option( 'themedoni_buy_now_pay_later_cheque_conditions' );
+
+	$key = array_search( $installment_name, array_column( $installments, 'condition_name' ) );
+
+
+	echo json_encode( [
+		'status'   => 'success',
+		'response' => $installments[ $key ] ?? []
+	] );
+	die;
 }
 
 // Initialization
-
 if ( class_exists( 'Inc\Init' ) ) {
 	\Inc\Init::register_services();
 }

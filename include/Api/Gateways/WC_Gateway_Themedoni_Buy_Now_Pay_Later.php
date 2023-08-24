@@ -1,5 +1,8 @@
 <?php
 
+use Inc\Api\Callbacks\GatewayCallbacks;
+use Inc\Api\Callbacks\OptionsPaymentGatewayCallback;
+
 function init_themedoni_buy_now_pay_later() {
 	add_filter( 'woocommerce_payment_gateways', 'WC_Add_Themedoni_Buy_Now_Pay_Later' );
 
@@ -10,6 +13,8 @@ function init_themedoni_buy_now_pay_later() {
 	}
 
 	class WC_Gateway_Themedoni_Buy_Now_Pay_Later extends WC_Payment_Gateway {
+		public $gateway_callbacks;
+		public $options_payment_gateway_callbacks;
 		public $rules;
 
 		/**
@@ -33,6 +38,9 @@ function init_themedoni_buy_now_pay_later() {
 		public $extra_fields;
 
 		public function __construct() {
+			$this->gateway_callbacks                 = new GatewayCallbacks;
+			$this->options_payment_gateway_callbacks = new OptionsPaymentGatewayCallback();
+
 			$this->id                 = 'WC_Gateway_Themedoni_Buy_Now_Pay_Later';
 			$this->method_title       = __( 'پرداخت با چک پیشرفته' );
 			$this->method_description = __( 'تنظیمات درگاه پرداخت با چک پیشرفته برای افزونه فروشگاه ساز ووکامرس' );
@@ -68,50 +76,14 @@ function init_themedoni_buy_now_pay_later() {
 				]
 			);
 
-			if ( version_compare( WOOCOMMERCE_VERSION, '2.0.0', '>=' ) ) {
-				add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'process_admin_options' ] );
+			// if ( version_compare( WOOCOMMERCE_VERSION, '2.0.0', '>=' ) )
+			add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'process_admin_options' ] );
+			add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this->options_payment_gateway_callbacks, 'save_rules' ] );
+			add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this->options_payment_gateway_callbacks, 'save_cheque_conditions' ] );
+			add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this->options_payment_gateway_callbacks, 'save_extra_fields' ] );
 
-				add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'save_rules' ] );
-				add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'save_cheque_conditions' ] );
-				add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'save_extra_fields' ] );
-
-			} else {
-				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'process_admin_options' ] );
-
-				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'save_rules' ] );
-				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'save_cheque_conditions' ] );
-				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'save_extra_fields' ] );
-			}
-
-
+			// payment process
 			add_action( 'woocommerce_receipt_' . $this->id, [ $this, 'redirect_to_cheque_payment_page' ] );
-			add_action( 'woocommerce_thankyou', [ $this, 'return_from_cheque_payment_page' ], 10, 2 );
-
-		}
-
-		public function gateway_bacs_custom_fields( $description, $payment_id ) {
-			//
-			ob_start(); // Start buffering
-
-			echo '<div  class="bacs-fields" style="padding:10px 0;">';
-
-			woocommerce_form_field( 'field_slug', array(
-				'type'     => 'select',
-				'label'    => __( "Fill in this field", "woocommerce" ),
-				'class'    => array( 'form-row-wide' ),
-				'required' => false,
-				'options'  => array(
-					''         => __( "Select something", "woocommerce" ),
-					'choice-1' => __( "Choice one", "woocommerce" ),
-					'choice-2' => __( "Choice two", "woocommerce" ),
-				),
-			), '' );
-
-			echo '<div>';
-
-			$description .= ob_get_clean(); // Append buffered content
-
-			return $description;
 		}
 
 		public function init_form_fields() {
@@ -142,8 +114,7 @@ function init_themedoni_buy_now_pay_later() {
 						'title'       => __( 'تایید به نام کردن چک' ),
 						'type'        => 'checkbox',
 						'label'       => __( 'فعال سازی فیلد تایید' ),
-						'description' => __( 'یک فیلد تایید ثبت چک ها در زیر فیلد آپلود چک ها اضافه می کند. این گزینه برای اطمینان از
-اینکه مشتریان فرایند ث بت چک ها را انجام داده اند اضافه می شود.' ),
+						'description' => __( 'یک فیلد تایید ثبت چک ها در زیر فیلد آپلود چک ها اضافه می کند. این گزینه برای اطمینان از' ),
 						'default'     => 'yes',
 						'desc_tip'    => true,
 					],
@@ -151,9 +122,7 @@ function init_themedoni_buy_now_pay_later() {
 						'title'       => __( 'حداقل مبلغ سبد خرید' ),
 						'type'        => 'number',
 						'desc_tip'    => true,
-						'description' => __( 'در صورتی که مبلغ سبد خرید مشتری از این مبلغ کمتر باشد، درگاه پرداخت با چک در آن
-سفارش نمایش داده نخواهد شد. این گز ینه کمک می کند تا برای مبالغ کم، امکان پر داخت چکی را
-غیرفعال کنید .' ),
+						'description' => __( 'در صورتی که مبلغ سبد خرید مشتری از این مبلغ کمتر باشد، درگاه پرداخت با چک در آن سفارش نمایش داده نخواهد شد. این گز ینه کمک می کند تا برای مبالغ کم، امکان پر داخت چکی را غیرفعال کنید .' ),
 						'placeholder' => 'تومان',
 						'default'     => 0
 					],
@@ -173,7 +142,6 @@ function init_themedoni_buy_now_pay_later() {
 					]
 				]
 			);
-
 		}
 
 		public function generate_rules_html() {
@@ -197,19 +165,6 @@ function init_themedoni_buy_now_pay_later() {
 
 			<?php
 			return ob_get_clean();
-		}
-
-		public function save_rules() {
-			$rules = '';
-
-			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verification already handled in WC_Admin_Settings::save()
-			if ( isset( $_POST['themedoni_bnpl_rules'] ) ) {
-				$rules = htmlentities( wpautop( $_POST['themedoni_bnpl_rules'] ) );
-			}
-			// phpcs:enable
-
-			do_action( 'woocommerce_update_option', [ 'id' => 'themedoni_buy_now_pay_later_rules' ] );
-			update_option( 'themedoni_buy_now_pay_later_rules', $rules );
 		}
 
 
@@ -288,49 +243,6 @@ function init_themedoni_buy_now_pay_later() {
 			return ob_get_clean();
 
 		}
-
-		/**
-		 * Save cheque conditions table.
-		 */
-		public function save_cheque_conditions() {
-
-			$conditions = [];
-
-			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verification already handled in WC_Admin_Settings::save()
-			if (
-				isset( $_POST['themedoni_bnpl_condition_name'] ) &&
-				isset( $_POST['themedoni_bnpl_prepayment'] ) &&
-				isset( $_POST['themedoni_bnpl_installments'] ) &&
-				isset( $_POST['themedoni_bnpl_term_of_installments'] ) &&
-				isset( $_POST['themedoni_bnpl_commission_rate'] )
-			) {
-
-				$condition_names      = wc_clean( wp_unslash( $_POST['themedoni_bnpl_condition_name'] ) );
-				$prepayments          = wc_clean( wp_unslash( $_POST['themedoni_bnpl_prepayment'] ) );
-				$installments         = wc_clean( wp_unslash( $_POST['themedoni_bnpl_installments'] ) );
-				$term_of_installments = wc_clean( wp_unslash( $_POST['themedoni_bnpl_term_of_installments'] ) );
-				$commission_rates     = wc_clean( wp_unslash( $_POST['themedoni_bnpl_commission_rate'] ) );
-
-				foreach ( $condition_names as $i => $name ) {
-					if ( ! isset( $condition_names[ $i ] ) ) {
-						continue;
-					}
-
-					$conditions[] = [
-						'condition_name'       => $condition_names[ $i ],
-						'prepayment'           => $prepayments[ $i ],
-						'installments'         => $installments[ $i ],
-						'term_of_installments' => $term_of_installments[ $i ],
-						'commission_rate'      => $commission_rates[ $i ],
-					];
-				}
-			}
-			// phpcs:enable
-
-			do_action( 'woocommerce_update_option', [ 'id' => 'themedoni_buy_now_pay_later_cheque_conditions' ] );
-			update_option( 'themedoni_buy_now_pay_later_cheque_conditions', $conditions );
-		}
-
 
 		/**
 		 * Generate cheque conditions html.
@@ -412,119 +324,18 @@ function init_themedoni_buy_now_pay_later() {
 
 		}
 
-		/**
-		 * Save cheque conditions table.
-		 */
-		public function save_extra_fields() {
+		public function redirect_to_cheque_payment_page( $order_id) {
 
-			$fields = [];
-
-			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verification already handled in WC_Admin_Settings::save()
-			if (
-				isset( $_POST['themedoni_bnpl_field_name'] ) &&
-				isset( $_POST['themedoni_bnpl_field_id'] ) &&
-				isset( $_POST['themedoni_bnpl_field_type'] )
-			) {
-
-				$fields_names = wc_clean( wp_unslash( $_POST['themedoni_bnpl_field_name'] ) );
-				$fields_ids   = wc_clean( wp_unslash( $_POST['themedoni_bnpl_field_id'] ) );
-				$fields_types = wc_clean( wp_unslash( $_POST['themedoni_bnpl_field_type'] ) );
-
-				foreach ( $fields_names as $i => $name ) {
-					if ( ! isset( $fields_names[ $i ] ) ) {
-						continue;
-					}
-
-					$fields[] = [
-						'field_name' => $fields_names[ $i ],
-						'field_id'   => $fields_ids[ $i ],
-						'field_type' => $fields_types[ $i ],
-					];
-				}
-			}
-			// phpcs:enable
-
-			do_action( 'woocommerce_update_option', [ 'id' => 'themedoni_buy_now_pay_later_extra_fields' ] );
-			update_option( 'themedoni_buy_now_pay_later_extra_fields', $fields );
-		}
-
-		public function redirect_to_cheque_payment_page( $order_id ) {
 			$order = new WC_Order( $order_id );
 			if ( isset( $_POST['themedoni_bnpl_submit'] ) ) {
-				global $woocommerce;
-
-				if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-					$files            = [];
-					$wp_upload_path   = wp_upload_dir();
-					$bnpl_upload_path = $wp_upload_path['basedir'] . '/bnpl_uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/';
-					$bnpl_upload_url  = '/bnpl_uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/';
-
-					if ( ! file_exists( $bnpl_upload_path ) ) {
-						wp_mkdir_p( $bnpl_upload_path );
-					}
-
-					$input = [];
-					foreach ( $this->extra_fields as $extra_field ) {
-						$input[ $extra_field['field_id'] ] = $_POST[ $extra_field['field_id'] ];
-
-						// if extra field has an input:file
-						if ( $extra_field['field_type'] == 'file' ) {
-							if ( isset( $_FILES ) && $_FILES[ $extra_field['field_id'] ] ) {
-								$file_name     = explode( '.', $_FILES[ $extra_field['field_id'] ]['name'] );
-								$new_file_name = rand( 100000000, 9999999999 ) . '.' . $file_name[1];
-								$result        = move_uploaded_file( $_FILES[ $extra_field['field_id'] ]['tmp_name'], $bnpl_upload_path . $new_file_name );
-								if ( $result ) {
-									$input[ $extra_field['field_id'] ] = $bnpl_upload_url . $new_file_name;
-								}
-							}
-						}
-
-					}
-
-					update_post_meta( $order_id, 'themedoni_bnpl_extra_fields', $input );
-					update_post_meta( $order_id, 'themedoni_bnpl_cheque_condition', $_POST['name'] );
-
-					// upload cheque images
-					if ( is_array( $_FILES ) ) {
-						foreach ( $_FILES as $file ) {
-							$file_name     = explode( '.', $file['name'] );
-							$new_file_name = rand( 100000000, 9999999999 ) . '.' . $file_name[1];
-							$result        = move_uploaded_file( $file['tmp_name'], $bnpl_upload_path . $new_file_name );
-							$files[]       = $bnpl_upload_url . $new_file_name;
-							if ( $result ) {
-								update_post_meta( $order_id, 'themedoni_bnpl_cheque', $files );
-							}
-						}
-					} else {
-						$file_name     = explode( '.', $_FILES['name'] );
-						$new_file_name = rand( 100000000, 9999999999 ) . '.' . $file_name[1];
-						$result        = move_uploaded_file( $_FILES['tmp_name'], $bnpl_upload_url . $new_file_name );
-						if ( $result ) {
-							update_post_meta( $order_id, 'themedoni_bnpl_cheque', $bnpl_upload_url . $new_file_name );
-						}
-					}
-
-					$order->update_status( 'on-hold', 'در انتظار تایید چک' ); // order note is optional, if you want to  add a note to order
-					$woocommerce->cart->empty_cart();
-
-					wp_redirect( add_query_arg( 'wc_status', 'success', $this->get_return_url( $order ) ) );
-				}
+				$this->gateway_callbacks->redirect_to_cheque_payment_page( $order_id, $this->extra_fields );
+				wp_redirect( add_query_arg( 'wc_status', 'success', $this->get_return_url( $order ) ) );
 			}
-
-			add_action( 'wp_enqueue_scripts', [ $this, 'wp_enqueue_scripts_callback' ], 1 );
 
 			extract( [ $this->rules, $this->cheque_conditions, $this->extra_fields ] );
 			include_once BNPL_PATH . 'templates/gateways/cheque-payment-page.php';
 		}
 
-		public function wp_enqueue_scripts_callback() {
-			wp_register_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], BuyNowPayLaterVersion );
-			wp_register_script( 'chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', [ 'jquery' ], BuyNowPayLaterVersion );
-
-			wp_enqueue_style( 'bnplTailwindCss' );
-			wp_enqueue_script( 'chequePaymentScript' );
-			// wp_enqueue_script( 'bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null );
-		}
 
 		public function process_payment( $order_id ) {
 			$order = new WC_Order( $order_id );
@@ -535,31 +346,5 @@ function init_themedoni_buy_now_pay_later() {
 			);
 		}
 
-		public function return_from_cheque_payment_page( $order_id ) {
-
-
-			wp_redirect( home_url() );
-			$order = new WC_Order( $order_id );
-			extract( [ $order ] );
-			include_once BNPL_PATH . 'templates/gateways/cheque-paid-page.php';
-		}
 	}
-}
-
-add_action( 'plugins_loaded', 'init_themedoni_buy_now_pay_later' );
-add_action( 'wp_ajax_bnpl_get_data', 'bnpl_get_term_of_installment' );
-
-function bnpl_get_term_of_installment() {
-	$installment_name = $_POST['name'];
-
-	$installments = get_option( 'themedoni_buy_now_pay_later_cheque_conditions' );
-
-	$key = array_search( $installment_name, array_column( $installments, 'condition_name' ) );
-
-
-	echo json_encode( [
-		'status'   => 'success',
-		'response' => $installments[ $key ] ?? []
-	] );
-	die;
 }
