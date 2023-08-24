@@ -39,7 +39,7 @@ $uploads = wp_upload_dir();
                 </tr>
                 <tr>
                     <td class="label">مبلغ نهایی:</td>
-                    <td>درحال محاسبه</td>
+                    <td><?= priceFormat( $final_price ) ?></td>
                 </tr>
                 </tbody>
             </table>
@@ -58,7 +58,7 @@ $uploads = wp_upload_dir();
 				<?php foreach ( $dates as $key => $cheque_date ): ?>
                     <tr>
                         <td class="label">تاریخ <?= ++ $key ?> :</td>
-                        <td><?= convertEnglishToPersian(jalaliDate($cheque_date)) ?></td>
+                        <td><?= convertEnglishToPersian( jalaliDate( $cheque_date ) ) ?></td>
                     </tr>
 				<?php endforeach; ?>
 
@@ -78,7 +78,7 @@ $uploads = wp_upload_dir();
                                 </td>
 							<?php else: ?>
 								<?php if ( ! empty( $order_extra_fields_value[ $extra_field['field_id'] ] ) ): ?>
-                                    <td><?= convertEnglishToPersian($order_extra_fields_value[ $extra_field['field_id'] ]) ?></td>
+                                    <td><?= convertEnglishToPersian( $order_extra_fields_value[ $extra_field['field_id'] ] ) ?></td>
 								<?php else: ?>
                                     <td style="color: #999">موردی وجود ندارد</td>
 								<?php endif; ?>

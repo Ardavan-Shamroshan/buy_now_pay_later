@@ -20,9 +20,6 @@ class OrderMetaBoxController extends BaseController {
 
 	public function add_cheque_order_field_content( $post ) {
 		$order = wc_get_order( $post->ID ); // Get the WC_Order object
-		if ( $order->get_payment_method() != 'WC_Gateway_Themedoni_Buy_Now_Pay_Later' ) {
-			remove_meta_box( 'cheque_order_field', 'shop_order', 'advanced' );
-		}
 
 		$extra_fields      = get_option( 'themedoni_buy_now_pay_later_extra_fields' );
 		$cheque_conditions = get_option( 'themedoni_buy_now_pay_later_cheque_conditions' );
@@ -34,7 +31,23 @@ class OrderMetaBoxController extends BaseController {
 		$key                    = array_search( $order_cheque_condition_name, array_column( $cheque_conditions, 'condition_name' ) );
 		$order_cheque_condition = $cheque_conditions[ $key ];
 
-		extract( [ $order, $extra_fields, $cheque_conditions, $order_extra_fields_value, $order_cheques, $order_cheque_condition ] );
+		$final_price = $this->gateway_calculator( $order->get_total(), $order_cheque_condition );
+
+		extract( [ $order, $extra_fields, $cheque_conditions, $order_extra_fields_value, $order_cheques, $order_cheque_condition, $final_price ] );
 		include_once $this->plugin_path . '/templates/order-metabox.php';
+	}
+
+	public function gateway_calculator( $order_total, $order_cheque_condition ) {
+		$prepayment      = (int) $order_cheque_condition['prepayment'];
+		$installments    = (int) $order_cheque_condition['installments'];
+		$commission_rate = (int) $order_cheque_condition['commission_rate'];
+
+		$prepayment_price               = $order_total * ( $prepayment / 100 );
+		$remained                       = $order_total - $prepayment_price;
+		$commission_price               = $remained * ( $commission_rate / 100 );
+		$remained_with_commission_price = $remained + $commission_price;
+		$every_installment_price        = $remained_with_commission_price / $installments;
+
+		return $remained_with_commission_price + $prepayment_price;
 	}
 }
