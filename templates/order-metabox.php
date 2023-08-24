@@ -46,7 +46,8 @@ $uploads = wp_upload_dir();
 			$daysToAdd = $order_cheque_condition['term_of_installments'] / $order_cheque_condition['installments'];
 			$dates     = [];
 			for ( $i = 0; $i < $order_cheque_condition['installments']; $i ++ ):
-				$dates[] = date( 'Y-m-d', strtotime( "+$daysToAdd days" ) );
+				$date    = date( 'Y-m-d', strtotime( "+$daysToAdd days" ) );
+				$dates[] = wc_string_to_datetime( $date );
 			endfor;
 			?>
             <table style="width:100%;margin-top: 1rem;">
@@ -55,7 +56,7 @@ $uploads = wp_upload_dir();
 				<?php foreach ( $dates as $key => $cheque_date ): ?>
                     <tr>
                         <td class="label">تاریخ <?= ++ $key ?> :</td>
-                        <td><?= convertEnglishToPersian( jalaliDate( $cheque_date ) ) ?></td>
+                        <td><?= esc_html( wc_format_datetime( $cheque_date ) ) ?></td>
                     </tr>
 				<?php endforeach; ?>
 
