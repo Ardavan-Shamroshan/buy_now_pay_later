@@ -31,9 +31,10 @@ class OrderMetaBoxController extends BaseController {
 		$key                    = array_search( $order_cheque_condition_name, array_column( $cheque_conditions, 'condition_name' ) );
 		$order_cheque_condition = $cheque_conditions[ $key ];
 
-		$final_price = $this->gateway_calculator( $order->get_total(), $order_cheque_condition );
+		list(  $final_price, $every_installment_price,$prepayment_price ) = $this->gateway_calculator( $order->get_total(), $order_cheque_condition );
 
-		extract( [ $order, $extra_fields, $cheque_conditions, $order_extra_fields_value, $order_cheques, $order_cheque_condition, $final_price ] );
+
+		extract( [ $order, $extra_fields, $cheque_conditions, $order_extra_fields_value, $order_cheques, $order_cheque_condition, $final_price, $prepayment_price, $every_installment_price ] );
 		include_once $this->plugin_path . '/templates/order-metabox.php';
 	}
 
@@ -48,6 +49,6 @@ class OrderMetaBoxController extends BaseController {
 		$remained_with_commission_price = $remained + $commission_price;
 		$every_installment_price        = $remained_with_commission_price / $installments;
 
-		return $remained_with_commission_price + $prepayment_price;
+		return [ $remained_with_commission_price + $prepayment_price, $every_installment_price, $prepayment_price ];
 	}
 }

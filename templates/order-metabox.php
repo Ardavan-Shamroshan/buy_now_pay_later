@@ -23,19 +23,16 @@ $uploads = wp_upload_dir();
                 </tr>
                 <tr>
                     <td class="label">پیش پرداخت:</td>
-                    <td><?= priceFormat( $order_cheque_condition['prepayment'] ) ?></td>
+                    <td><?= discountFormat( $order_cheque_condition['prepayment'] ) ?></td>
+                    <td><?= priceFormat( $prepayment_price ) ?></td>
                 </tr>
                 <tr>
                     <td class="label">اقساط:</td>
                     <td><?= convertEnglishToPersian( $order_cheque_condition['installments'] ) ?></td>
                 </tr>
                 <tr>
-                    <td class="label">بازپرداخت:</td>
-                    <td><?= convertEnglishToPersian( $order_cheque_condition['term_of_installments'] ) ?></td>
-                </tr>
-                <tr>
-                    <td class="label">نرخ کارمزد:</td>
-                    <td><?= discountFormat( $order_cheque_condition['commission_rate'] ) ?></td>
+                    <td class="label">مبلغ چک ها:</td>
+                    <td><?= priceFormat( $every_installment_price ) ?></td>
                 </tr>
                 <tr>
                     <td class="label">مبلغ نهایی:</td>
