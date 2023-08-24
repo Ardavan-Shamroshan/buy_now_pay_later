@@ -83,11 +83,36 @@ function init_themedoni_buy_now_pay_later() {
 				add_action( 'woocommerce_update_options_payment_gateways', [ $this, 'save_extra_fields' ] );
 			}
 
+
 			add_action( 'woocommerce_receipt_' . $this->id, [ $this, 'redirect_to_cheque_payment_page' ] );
 			add_action( 'woocommerce_thankyou', [ $this, 'return_from_cheque_payment_page' ], 10, 2 );
 
 		}
 
+		public function gateway_bacs_custom_fields( $description, $payment_id ) {
+			//
+			ob_start(); // Start buffering
+
+			echo '<div  class="bacs-fields" style="padding:10px 0;">';
+
+			woocommerce_form_field( 'field_slug', array(
+				'type'     => 'select',
+				'label'    => __( "Fill in this field", "woocommerce" ),
+				'class'    => array( 'form-row-wide' ),
+				'required' => false,
+				'options'  => array(
+					''         => __( "Select something", "woocommerce" ),
+					'choice-1' => __( "Choice one", "woocommerce" ),
+					'choice-2' => __( "Choice two", "woocommerce" ),
+				),
+			), '' );
+
+			echo '<div>';
+
+			$description .= ob_get_clean(); // Append buffered content
+
+			return $description;
+		}
 
 		public function init_form_fields() {
 			$this->form_fields = apply_filters( 'WC_Gateway_Themedoni_Buy_Now_Pay_Later_Config', [
@@ -482,7 +507,7 @@ function init_themedoni_buy_now_pay_later() {
 					$order->update_status( 'on-hold', 'در انتظار تایید چک' ); // order note is optional, if you want to  add a note to order
 					$woocommerce->cart->empty_cart();
 
-					return;
+					wp_redirect( add_query_arg( 'wc_status', 'success', $this->get_return_url( $order ) ) );
 				}
 			}
 
@@ -493,7 +518,7 @@ function init_themedoni_buy_now_pay_later() {
 		}
 
 		public function wp_enqueue_scripts_callback() {
-			wp_register_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [ 'tailwindcss' ], BuyNowPayLaterVersion );
+			wp_register_style( 'bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], BuyNowPayLaterVersion );
 			wp_register_script( 'chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', [ 'jquery' ], BuyNowPayLaterVersion );
 
 			wp_enqueue_style( 'bnplTailwindCss' );

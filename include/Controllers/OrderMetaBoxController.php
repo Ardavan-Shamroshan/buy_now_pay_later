@@ -2,21 +2,26 @@
 
 namespace Inc\Controllers;
 
+
 class OrderMetaBoxController extends BaseController {
 
 	public function register() {
 		// Adding Meta container admin shop_order pages
-		add_action( 'add_meta_boxes', [ $this, 'add_shop_order_meta_boxes' ] );
+		add_action( 'add_meta_boxes', [ $this, 'add_shop_order_meta_boxes' ], 10, 2 );
 	}
 
-	public function add_shop_order_meta_boxes( $post ) {
-		add_meta_box( 'cheque_order_field', __( 'اطلاعات چک ها', 'woocommerce' ), [ $this, 'add_cheque_order_field_content' ], 'shop_order' );
+	public function add_shop_order_meta_boxes( $post_type, $post ) {
+		$order = wc_get_order( $post->ID ); // Get the WC_Order object
+		if ( $order->get_payment_method() != 'WC_Gateway_Themedoni_Buy_Now_Pay_Later' ) {
+			return;
+		}
+		add_meta_box( 'cheque_order_field', __( 'اطلاعات چک ها' ), [ $this, 'add_cheque_order_field_content' ], 'shop_order' );
 	}
 
 	public function add_cheque_order_field_content( $post ) {
 		$order = wc_get_order( $post->ID ); // Get the WC_Order object
 		if ( $order->get_payment_method() != 'WC_Gateway_Themedoni_Buy_Now_Pay_Later' ) {
-			return;
+			remove_meta_box( 'cheque_order_field', 'shop_order', 'advanced' );
 		}
 
 		$extra_fields      = get_option( 'themedoni_buy_now_pay_later_extra_fields' );
