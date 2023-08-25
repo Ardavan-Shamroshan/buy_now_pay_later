@@ -4,8 +4,10 @@ add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_callback');
 
 function wp_enqueue_scripts_callback()
 {
-    // wp_enqueue_script('bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null);
+
+    wp_enqueue_script('bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null);
     wp_enqueue_style('bnplTailwindCss');
+    // wp_enqueue_style('bnplChequePaymentCss');
     wp_enqueue_script('chequePaymentScript');
     wp_localize_script(
         'chequePaymentScript',
@@ -17,6 +19,9 @@ function wp_enqueue_scripts_callback()
 ?>
 
 <div id="bnpl-container">
+    <div id="loading-overlay">
+        <div class="loading-icon"></div>
+    </div>
     <input type="hidden" name="themedoni_bnpl_order_total" value="<?= $order->get_total() ?>">
     <div class="relative px-6 py-5 overflow-hidden bg-white isolate lg:overflow-visible lg:px-0">
 
@@ -32,6 +37,8 @@ function wp_enqueue_scripts_callback()
             <p class="text-base font-semibold leading-7 text-indigo-600">قوانین</p>
             <p class="mt-6 text-xl leading-8 text-gray-700"><?= html_entity_decode($this->rules) ?></p>
         </div>
+
+
         <form id="loading-container" method="post" action="" enctype="multipart/form-data" class="grid max-w-2xl grid-cols-1 p-5 mx-auto border shadow-md gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10 rounded-xl shadow-indigo-500/20">
             <div class="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
                 <div class="lg:pr-4">
@@ -50,10 +57,9 @@ function wp_enqueue_scripts_callback()
                             <p class="mb-2 text-sm text-gray-500 "><span class="font-semibold">تصویر چک را انتخاب کنید</span> یا آنرا به داخل کادر بکشید</p>
                             <p class="text-xs text-gray-500 ">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                         </div>
-                        <input id="dropzone-file" type="file" class="hidden" />
+                        <input type="file" class="hidden imgInp" id="dropzone-file" />
                     </label>
                 </div>
-
                 <div class="w-full py-2">
                     <?php foreach ($this->extra_fields as $field) : ?>
                         <label for="<?= $field['field_id'] ?>" class="text-sm font-medium leading-6 text-gray-900"><?= $field['field_name'] ?></label>

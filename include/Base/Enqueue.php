@@ -28,8 +28,8 @@ class Enqueue extends BaseController {
 	 */
 	public function enqueue()
 	{
+		wp_register_style('bnplChequePaymentCss', BNPL_URL . '/assets/cheque-payment.css', [], BuyNowPayLaterVersion);
 		wp_register_style('bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], BuyNowPayLaterVersion);
-
 		wp_register_script('chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', ['jquery'], BuyNowPayLaterVersion);
 	}
 }
