@@ -5,7 +5,6 @@ use Inc\Api\Callbacks\OptionsPaymentGatewayCallback;
 
 function init_themedoni_buy_now_pay_later()
 {
-
 	add_filter('woocommerce_payment_gateways', 'WC_Add_Themedoni_Buy_Now_Pay_Later', 10, 1);
 
 	function WC_Add_Themedoni_Buy_Now_Pay_Later($methods)
@@ -52,6 +51,7 @@ function init_themedoni_buy_now_pay_later()
 			}
 		}
 	}
+
 
 	class WC_Gateway_Themedoni_Buy_Now_Pay_Later extends WC_Payment_Gateway
 	{
@@ -197,7 +197,7 @@ function init_themedoni_buy_now_pay_later()
 		public function generate_rules_html()
 		{
 			ob_start();
-?>
+		?>
 
 			<tr>
 				<th scope="row" class="titledesc"><?php esc_html_e('قوانین:', 'themedoni'); ?></th>

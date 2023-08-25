@@ -21,7 +21,7 @@ class GatewayCallbacks {
 			}
 
 			$input = [];
-			foreach ( $this->extra_fields as $extra_field ) {
+			foreach ( $extra_fields as $extra_field ) {
 				$input[ $extra_field['field_id'] ] = $_POST[ $extra_field['field_id'] ];
 
 				// if extra field has an input:file
@@ -35,7 +35,6 @@ class GatewayCallbacks {
 						}
 					}
 				}
-
 			}
 
 			update_post_meta( $order_id, 'themedoni_bnpl_extra_fields', $input );
@@ -61,7 +60,7 @@ class GatewayCallbacks {
 				}
 			}
 
-			$order->update_status( 'on-hold', 'در انتظار تایید چک' ); // order note is optional, if you want to  add a note to order
+			$order->update_status('cheque_approval', 'در انتظار تایید چک' ); // order note is optional, if you want to  add a note to order
 			$woocommerce->cart->empty_cart();
 		}
 	}

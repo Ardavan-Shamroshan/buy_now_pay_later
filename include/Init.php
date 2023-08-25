@@ -28,6 +28,7 @@ final class Init {
 			Base\Enqueue::class,
 			Base\SettingsLink::class,
 
+			Controllers\GatewayHooksController::class,
 			Controllers\BuyNowPayLaterController::class,
 			Controllers\OrderMetaBoxController::class
 		];
