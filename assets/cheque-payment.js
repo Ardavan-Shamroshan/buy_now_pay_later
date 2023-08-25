@@ -102,9 +102,7 @@ jQuery(document).ready(function ($) {
                     const [file] = this.files;
                     if (file) {
                         let parent_label = $(this).parent("label");
-                        $(parent_label).fadeOut(300, function () {
-                            $(this).remove();
-                        });
+                        $(parent_label).hide();
                         $('<img src="' + URL.createObjectURL(file) + '" alt="" class="mt-6" />').fadeIn(300, function () {
                             $(this).appendTo("#bnpl_installments_container");
                         });
