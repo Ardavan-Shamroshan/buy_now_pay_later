@@ -6,13 +6,14 @@ use Inc\Controllers\BaseController;
 
 class Enqueue extends BaseController {
 	public function register() {
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue' ] );
 	}
 
 	/**
-	 * Enqueue scripts
+	 * Admin Enqueue scripts
 	 */
-	public function enqueue() {
+	public function admin_enqueue() {
 		// enable wp builtin media upload used in MediaWidget.php
 		wp_enqueue_script( 'media-upload' );
 		wp_enqueue_media();
@@ -20,5 +21,15 @@ class Enqueue extends BaseController {
 		// override
 		wp_enqueue_style( 'peachCoreStyle', $this->plugin_url . 'assets/override.css', [], null );
 		wp_enqueue_script( 'peachCoreScript', $this->plugin_url . 'assets/override.js', [], null );
+	}
+
+	/**
+	 * WP Enqueue scripts
+	 */
+	public function enqueue()
+	{
+		wp_register_style('bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], BuyNowPayLaterVersion);
+
+		wp_register_script('chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', ['jquery'], BuyNowPayLaterVersion);
 	}
 }

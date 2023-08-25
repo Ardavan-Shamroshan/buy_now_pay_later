@@ -22,16 +22,16 @@ jQuery(document).ready(function ($) {
     function handleAjax(installment_name, order_total) {
         $.ajax({
             type: "post",
-            url: '/buy-now-pay-later/wp-admin/admin-ajax.php',
+            url: ajax_obj.ajax_url,
             data: {
                 action: 'bnpl_get_data',
                 name: installment_name,
                 orderTotal: order_total,
+                nonce: ajax_obj.nonce
             },
             success: function (response) {
                 let today = new Date();
                 response = JSON.parse(response);
-                console.log(response);
                 let daysToAdd = parseInt(response.response.term_of_installments) / parseInt(response.response.installments);
 
                 $('#bnpl_installments_container').empty();
@@ -64,7 +64,6 @@ jQuery(document).ready(function ($) {
                     let mypersiandate = mydate.toLocaleDateString('fa-IR');
                     $('<p class="text-base font-semibold leading-7 text-indigo-600"> تاریخ چک ' + toFarsiNumber(counter) + ': </p><p class="font-bold">' + mypersiandate + '</p>').appendTo('#bnpl_cheque_dates');
                     counter++;
-
                 }
 
             },

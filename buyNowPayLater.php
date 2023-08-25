@@ -48,19 +48,22 @@ add_action( 'plugins_loaded', 'init_themedoni_buy_now_pay_later' );
 add_action( 'wp_ajax_bnpl_get_data', 'bnpl_get_term_of_installment' );
 
 function bnpl_get_term_of_installment() {
+	if(!wp_verify_nonce($_POST['nonce'])) {
+		wp_die('Access Denied!');
+	}
+
 	$installment_name = $_POST['name'];
 
 	$installments = get_option( 'themedoni_buy_now_pay_later_cheque_conditions' );
 
 	$key = array_search( $installment_name, array_column( $installments, 'condition_name' ) );
 
-
 	echo json_encode( [
 		'status'   => 'success',
 		'response' => $installments[ $key ] ?? [],
 		'order_total' => $_POST['orderTotal']
 	] );
-	die;
+	wp_die();
 }
 
 // Initialization
