@@ -23,6 +23,7 @@ class GatewayCallbacks
 			}
 
 
+			// validate national code
 			$input = [];
 			foreach ($extra_fields as $extra_field) {
 				$input[$extra_field['field_id']] = $_POST[$extra_field['field_id']];
@@ -30,52 +31,33 @@ class GatewayCallbacks
 				// if extra field has an input:file
 				if ($extra_field['field_type'] == 'file') {
 					if (isset($_FILES) && $_FILES[$extra_field['field_id']]) {
-						$file_name     = explode('.', $_FILES[$extra_field['field_id']]['name']);
-						$new_file_name = rand(100000000, 9999999999) . '.' . $file_name[1];
-						$result        = move_uploaded_file($_FILES[$extra_field['field_id']]['tmp_name'], $bnpl_upload_path . $new_file_name);
-						if ($result) {
-							$input[$extra_field['field_id']] = $bnpl_upload_url . $new_file_name;
-						}
+						$this->uploadFile($_FILES[$extra_field['field_id']]);
 					}
 				}
 			}
-
-			// validate national code
 
 			update_post_meta($order_id, 'themedoni_bnpl_extra_fields', $input);
 			update_post_meta($order_id, 'themedoni_bnpl_cheque_condition', $_POST['name']);
 
 			// upload cheque images
-			// if ( is_array( $_FILES ) ) {
-				var_dump($_FILES['themedoni_bnpl_cheque_image']);
-				die;
+
 			if (isset($_FILES['themedoni_bnpl_cheque_image'])) {
-				$cheque_files = $_FILES['themedoni_bnpl_cheque_image'];
-				$totalFile = count($_FILES['themedoni_bnpl_cheque_image']['name']);   //line 25
+				$cheque_files = [];
+				$totalFile = count($_FILES['themedoni_bnpl_cheque_image']['name']);
 
-				foreach ($_FILES['themedoni_bnpl_cheque_image']['name'] as $key => $name) {
-					var_dump($_FILES['themedoni_bnpl_cheque_image']);
-					
-					// $this->uploadFile($file);
-					// $file_name     = explode('.', $file['name']);
-					// $new_file_name = rand(100000000, 9999999999) . '.' . $file_name[1];
-					// $result        = move_uploaded_file($file['tmp_name'], $bnpl_upload_path . $new_file_name);
-					// $files[]       = $bnpl_upload_url . $new_file_name;
-					// if ($result) {
-					// 	update_post_meta($order_id, 'themedoni_bnpl_cheque', $files);
-					// }
+				// create array of uploaded files
+				for ($i = 0; $i < $totalFile; $i++) {
+					$cheque_files["themedoni_bnpl_cheque_image_$i"]['name'] = $_FILES['themedoni_bnpl_cheque_image']['name'][$i];
+					$cheque_files["themedoni_bnpl_cheque_image_$i"]['type'] = $_FILES['themedoni_bnpl_cheque_image']['type'][$i];
+					$cheque_files["themedoni_bnpl_cheque_image_$i"]['tmp_name'] = $_FILES['themedoni_bnpl_cheque_image']['tmp_name'][$i];
+					$cheque_files["themedoni_bnpl_cheque_image_$i"]['error'] = $_FILES['themedoni_bnpl_cheque_image']['error'][$i];
+					$cheque_files["themedoni_bnpl_cheque_image_$i"]['size'] = $_FILES['themedoni_bnpl_cheque_image']['size'][$i];
 				}
-				die;
 
+				foreach ($cheque_files as $cheque_file) {
+					$this->uploadFile($cheque_file);
+				}
 			}
-			// } else {	
-			// 	$file_name     = explode( '.', $_FILES['name'] );
-			// 	$new_file_name = rand( 100000000, 9999999999 ) . '.' . $file_name[1];
-			// 	$result        = move_uploaded_file( $_FILES['tmp_name'], $bnpl_upload_url . $new_file_name );
-			// 	if ( $result ) {
-			// 		update_post_meta( $order_id, 'themedoni_bnpl_cheque', $bnpl_upload_url . $new_file_name );
-			// 	}
-			// }
 
 			$order->update_status('cheque_approval', 'در انتظار تایید چک'); // order note is optional, if you want to  add a note to order
 			$woocommerce->cart->empty_cart();
@@ -88,8 +70,8 @@ class GatewayCallbacks
 			require_once(ABSPATH . 'wp-admin/includes/file.php');
 		}
 
-		$overrides = array('test_form' => false);
-		$file = wp_handle_upload($file, $overrides);
+		$overrides = ['test_form' => false, 'mimes' => ['jpg' => 'image/jpeg, image/pjpeg', 'jpeg' => 'image/jpeg, image/pjpeg', 'png' => 'image/png']];
+		$file = wp_handle_upload($file, $overrides,);
 
 		if (isset($file['error'])) {
 			return 0;
@@ -101,13 +83,13 @@ class GatewayCallbacks
 		$filename = wp_basename($file);
 
 		// Construct the attachment array.
-		$attachment = array(
+		$attachment = [
 			'post_title' => $filename,
 			'post_content' => $url,
 			'post_mime_type' => $type,
 			'guid' => $url,
 			'context' => 'custom-background',
-		);
+		];
 
 		$id = wp_insert_attachment($attachment, $file);
 		return $id;
