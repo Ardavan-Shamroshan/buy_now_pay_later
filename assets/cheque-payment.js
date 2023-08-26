@@ -1,4 +1,14 @@
+window.addEventListener("DOMContentLoaded", (event) => {
+
+});
+
 jQuery(document).ready(function ($) {
+
+
+
+
+
+
     let order_total = $('input[name="themedoni_bnpl_order_total"]').val();
     $("#bnpl-container #rules ul").addClass("list-disc text-slate-500");
 
@@ -9,17 +19,31 @@ jQuery(document).ready(function ($) {
                 'input[name="themedoni_bnpl_order_condition_name"]:checked'
             ).val();
 
-            $(document)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            $(document)
                 .ajaxStart(function () {
                     $("#loading-container").addClass("opacity-20");
                     $("#loader").removeClass("hidden");
-                    $("#loading-overlay").show();
                 })
                 .ajaxStop(function () {
                     $("#loading-container").removeClass("opacity-20");
                     $("#loader").addClass("hidden");
-                    $("#loading-overlay").hide();
                 });
 
             handleAjax(installment_name, order_total);
@@ -43,7 +67,6 @@ jQuery(document).ready(function ($) {
                     parseInt(response.response.term_of_installments) /
                     parseInt(response.response.installments);
 
-                $("#bnpl_installments_container").empty();
                 $("#bnpl_prepayment").empty();
                 $("#bnpl_installments").empty();
                 $("#bnpl_commission_rate").empty();
@@ -51,18 +74,6 @@ jQuery(document).ready(function ($) {
                 $("#bnpl_cheque_dates").empty();
                 let counter = 1;
                 for (let i = 0; i < response.response.installments; i++) {
-                    $(
-                        '<label for="dropzone-file" class="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50hover:bg-gray-100"><div class="flex flex-col items-center justify-center pt-5 pb-6"><svg class="w-8 h-8 mb-4 text-gray-500 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">\n' +
-                        '<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>\n' +
-                        '</svg><p class="mb-2 text-sm text-gray-500 "><span class="font-semibold">تصویر چک را انتخاب کنید</span> یا آنرا به داخل کادر بکشید</p>\n' +
-                        '<p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>\n' +
-                        "</div>\n" +
-                        '<input id="dropzone-file" type="file" name="themedoni_bnpl_cheque_image_' +
-                        i +
-                        '" class="hidden imgInp" required/>\n' +
-                        "</label>"
-                    ).appendTo("#bnpl_installments_container");
-
                     $("#bnpl_prepayment").html(
                         insertrialcamma(
                             toFarsiNumber(JSON.parse(response.response.prepayment))
@@ -98,16 +109,107 @@ jQuery(document).ready(function ($) {
                     counter++;
                 }
 
-                $(".imgInp").on("change", function (e) {
-                    const [file] = this.files;
-                    if (file) {
-                        let parent_label = $(this).parent("label");
-                        $(parent_label).hide();
-                        $('<img src="' + URL.createObjectURL(file) + '" alt="" class="mt-6" />').fadeIn(300, function () {
-                            $(this).appendTo("#bnpl_installments_container");
-                        });
-                    }
+
+
+                const fileInput = document.getElementById("file-input");
+                const dropZone = document.getElementById("drop-zone");
+                const selectedImages = document.getElementById("selected-images");
+                const selectButton = document.getElementById("select-button");
+                const selectedFilesCount = document.getElementById(
+                    "selected-files-count"
+                );
+
+                dropZone.addEventListener("click", () => {
+                    fileInput.click();
                 });
+
+                fileInput.addEventListener("change", handleFiles);
+                dropZone.addEventListener("dragover", handleDragOver);
+                dropZone.addEventListener("dragleave", handleDragLeave);
+                dropZone.addEventListener("drop", handleDrop);
+
+                function handleFiles() {
+                    const fileList = this.files;
+                    displayImages(fileList);
+                }
+                function handleDragOver(event) {
+                    event.preventDefault();
+                    dropZone.classList.add("border-blue-500");
+                    dropZone.classList.add("text-blue-500");
+                }
+
+                function handleDragLeave(event) {
+                    event.preventDefault();
+                    dropZone.classList.remove("border-blue-500");
+                    dropZone.classList.remove("text-blue-500");
+                }
+
+                function handleDrop(event) {
+                    event.preventDefault();
+                    const fileList = event.dataTransfer.files;
+                    displayImages(fileList);
+                    dropZone.classList.remove("border-blue-500");
+                    dropZone.classList.remove("text-blue-500");
+                }
+
+                function displayImages(fileList) {
+                    if (!(fileList.length > JSON.parse(response.response.installments))) {
+
+                        selectedImages.innerHTML = "";
+                        for (const file of fileList) {
+                            const imageWrapper = document.createElement("div");
+                            imageWrapper.classList.add("relative", "mx-2", "mb-2");
+                            const image = document.createElement("img");
+                            image.src = URL.createObjectURL(file);
+                            image.classList.add("w-32", "h-32", "object-cover", "rounded-lg");
+                            const removeButton = document.createElement("button");
+                            removeButton.innerHTML = "&times;";
+                            removeButton.classList.add(
+                                "absolute",
+                                "top-1",
+                                "right-1",
+                                "h-6",
+                                "w-6",
+                                "bg-gray-700",
+                                "text-white",
+                                "text-xs",
+                                "rounded-full",
+                                "flex",
+                                "items-center",
+                                "justify-center",
+                                "opacity-50",
+                                "hover:opacity-100",
+                                "transition-opacity",
+                                "focus:outline-none"
+                            );
+
+                            removeButton.addEventListener("click", () => {
+                                imageWrapper.remove();
+                                updateSelectedFilesCount();
+                            });
+
+                            imageWrapper.appendChild(image);
+                            imageWrapper.appendChild(removeButton);
+                            selectedImages.appendChild(imageWrapper);
+                        }
+                        updateSelectedFilesCount();
+                    }
+                    updateSelectedFilesCount(JSON.parse(response.response.installments));
+
+                }
+
+                function updateSelectedFilesCount(limited = false) {
+
+                    const count = selectedImages.children.length;
+                    if (count > 0) {
+                        selectedFilesCount.textContent = `${count} مورد انتخاب شده`;
+                    } else if (limited) {
+                        selectedFilesCount.textContent = `نمیتوان بیشتر از ${limited} مورد`;
+                    }
+                    else {
+                        selectedFilesCount.textContent = "";
+                    }
+                }
             },
             error: function (error) {
                 console.log(error);

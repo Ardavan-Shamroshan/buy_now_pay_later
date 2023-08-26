@@ -1,8 +1,4 @@
-
 <div id="bnpl-container">
-    <div id="loading-overlay">
-        <div class="loading-icon"></div>
-    </div>
     <input type="hidden" name="themedoni_bnpl_order_total" value="<?= $order->get_total() ?>">
     <div class="relative px-6 py-5 overflow-hidden bg-white isolate lg:overflow-visible lg:px-0">
 
@@ -28,18 +24,19 @@
                     </div>
                 </div>
             </div>
-            <div class="p-12 -mt-12 -ml-12 lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden">
+            <div class="lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden">
                 <div class="w-full" id="bnpl_installments_container">
-                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-8 h-8 mb-4 text-gray-500 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                            </svg>
-                            <p class="mb-2 text-sm text-gray-500 "><span class="font-semibold">تصویر چک را انتخاب کنید</span> یا آنرا به داخل کادر بکشید</p>
-                            <p class="text-xs text-gray-500 ">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+
+                    <div class="p-4 border-2 border-gray-100 rounded-lg">
+                        <input id="file-input" type="file" multiple class="hidden" name="themedoni_bnpl_cheque_image[]" />
+                        <div class="flex mb-4 flex-col cursor-pointer ">
+                            <div id="drop-zone" class="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex justify-center items-center text-gray-400 text-lg hover:bg-gray-100">
+                                <span>Drag and drop files here</span>
+                            </div>
+                            <div id="selected-files-count" class="text-gray-500 text-sm font-medium"></div>
+                            <div id="selected-images" class="flex flex-wrap -mx-2 mt-6"></div>
                         </div>
-                        <input type="file" class="hidden imgInp" id="dropzone-file" />
-                    </label>
+                    </div>
                 </div>
                 <div class="w-full py-2">
                     <?php foreach ($this->extra_fields as $field) : ?>
@@ -66,7 +63,7 @@
                                 <p class="font-bold"> <?= priceFormat($order->get_total()) ?></p>
                             </div>
 
-                            <ul class="grid w-full gap-6 md:grid-cols-2">
+                            <ul class="flex flex-wrap flex-row w-full gap-2 ">
                                 <?php
                                 $i = -1;
                                 if ($this->cheque_conditions) :
@@ -75,7 +72,7 @@
                                 ?>
                                         <li>
                                             <input type="radio" id="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" name="themedoni_bnpl_order_condition_name" value="<?= esc_attr($condition['condition_name']) ?>" class="hidden peer" required>
-                                            <label for="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" class="inline-flex items-center justify-between w-full p-2 text-center text-gray-500 bg-white border border-gray-200 rounded-md cursor-pointer peer-checked:border-blue-600 peer-checked:bg-indigo-50 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"><?= esc_attr($condition['condition_name']) ?></label>
+                                            <label for="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" class=" w-full py-2 px-10 text-center text-gray-500 bg-white border border-gray-200 rounded-md cursor-pointer peer-checked:border-blue-600 peer-checked:bg-indigo-50 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"><?= esc_attr($condition['condition_name']) ?></label>
                                         </li>
                                 <?php
                                     endforeach;

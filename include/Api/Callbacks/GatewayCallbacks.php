@@ -12,6 +12,9 @@ class GatewayCallbacks {
 
 		if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 			$files            = [];
+
+			var_dump($_FILES);
+			die;
 			$wp_upload_path   = wp_upload_dir();
 			$bnpl_upload_path = $wp_upload_path['basedir'] . '/bnpl_uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/';
 			$bnpl_upload_url  = '/bnpl_uploads/' . date( 'Y' ) . '/' . date( 'm' ) . '/';
@@ -20,6 +23,7 @@ class GatewayCallbacks {
 				wp_mkdir_p( $bnpl_upload_path );
 			}
 
+			
 			$input = [];
 			foreach ( $extra_fields as $extra_field ) {
 				$input[ $extra_field['field_id'] ] = $_POST[ $extra_field['field_id'] ];

@@ -7,7 +7,7 @@ use Inc\Controllers\BaseController;
 class Enqueue extends BaseController {
 	public function register() {
 		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue' ] );
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue' ], 999999999999999999999999 );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue' ] );
 	}
 
 	/**
@@ -32,7 +32,7 @@ class Enqueue extends BaseController {
 		wp_register_style('bnplTailwindCss', BNPL_URL . '/assets/dist/output.css', [], BuyNowPayLaterVersion);
 		wp_register_script('chequePaymentScript', BNPL_URL . '/assets/cheque-payment.js', ['jquery'], BuyNowPayLaterVersion);
 
-		// wp_enqueue_script('bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null);
+		wp_enqueue_script('bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null);
 		wp_enqueue_style('bnplTailwindCss');
 		// wp_enqueue_style('bnplChequePaymentCss');
 		wp_enqueue_script('chequePaymentScript');
