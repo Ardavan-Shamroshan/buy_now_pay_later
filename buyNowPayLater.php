@@ -6,14 +6,14 @@
  * Plugin Name: درگاه پرداخت اقساطی
  * Plugin URI: http://themedoni.com
  * Description: با این افزونه، شما می توانید پرداخت اقساطی با چک را در فروشگاه خود راه اندازی کنید.
- * Version: 2.0.0
+ * Version: 3.1.2
  * Author: Ardavan Shamroshan
  * Author URI: http://ardavanshamroshan.com
  * License: GPLv2 or later
  * Text Domain: http://themedoni.com
  */
 
-define("BuyNowPayLaterVersion", "2.0.0");
+define("BuyNowPayLaterVersion", "3.1.2");
 
 // Die if accessed externally
 defined('ABSPATH') || die;

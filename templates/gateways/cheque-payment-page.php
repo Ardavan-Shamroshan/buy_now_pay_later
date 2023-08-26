@@ -1,22 +1,3 @@
-<?php
-
-add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_callback');
-
-function wp_enqueue_scripts_callback()
-{
-
-    wp_enqueue_script('bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null);
-    wp_enqueue_style('bnplTailwindCss');
-    // wp_enqueue_style('bnplChequePaymentCss');
-    wp_enqueue_script('chequePaymentScript');
-    wp_localize_script(
-        'chequePaymentScript',
-        'ajax_obj',
-        ['ajax_url' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce()]
-    );
-}
-
-?>
 
 <div id="bnpl-container">
     <div id="loading-overlay">
