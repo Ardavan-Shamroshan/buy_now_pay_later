@@ -26,16 +26,18 @@
             </div>
             <div class="lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden">
                 <div class="w-full" id="bnpl_installments_container">
-
                     <div class="p-4 border-2 border-gray-100 rounded-lg">
-                        <input id="file-input" type="file" multiple class="hidden" name="themedoni_bnpl_cheque_image[]" />
                         <div class="flex mb-4 flex-col cursor-pointer ">
-                            <div id="drop-zone" class="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex justify-center items-center text-gray-400 text-lg hover:bg-gray-100">
-                                <span>Drag and drop files here</span>
+                            <div id="drop-zone" class="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col justify-center items-center text-gray-400 text-lg hover:bg-gray-100">
+                                <span>تصاویر را به اینجا بکشید و یا</span>
+                                <label for="file-input" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"> انتخاب کنید</label>
+                                <input id="file-input" type="file" multiple class="hidden " name="themedoni_bnpl_cheque_image[]" />
+
                             </div>
                             <div id="selected-files-count" class="text-gray-500 text-sm font-medium"></div>
                             <div id="selected-images" class="flex flex-wrap -mx-2 mt-6"></div>
                         </div>
+
                     </div>
                 </div>
                 <div class="w-full py-2">

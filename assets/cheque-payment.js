@@ -1,40 +1,17 @@
-window.addEventListener("DOMContentLoaded", (event) => {
 
-});
 
 jQuery(document).ready(function ($) {
-
-
-
-
-
-
     let order_total = $('input[name="themedoni_bnpl_order_total"]').val();
     $("#bnpl-container #rules ul").addClass("list-disc text-slate-500");
 
     $('input[name="themedoni_bnpl_order_condition_name"]').on(
         "click",
-        function () {
+        function (event) {
+            event.stopPropagation();
+
             let installment_name = $(
                 'input[name="themedoni_bnpl_order_condition_name"]:checked'
             ).val();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             $(document)
                 .ajaxStart(function () {
@@ -119,9 +96,10 @@ jQuery(document).ready(function ($) {
                     "selected-files-count"
                 );
 
-                dropZone.addEventListener("click", () => {
-                    fileInput.click();
-                });
+                // selectButton.addEventListener("click", (event) => {
+                //     event.stopPropagation();
+                //     fileInput.click();
+                // });
 
                 fileInput.addEventListener("change", handleFiles);
                 dropZone.addEventListener("dragover", handleDragOver);
@@ -183,7 +161,8 @@ jQuery(document).ready(function ($) {
                                 "focus:outline-none"
                             );
 
-                            removeButton.addEventListener("click", () => {
+                            removeButton.addEventListener("click", (event) => {
+                                event.stopPropagation();
                                 imageWrapper.remove();
                                 updateSelectedFilesCount();
                             });
@@ -195,7 +174,6 @@ jQuery(document).ready(function ($) {
                         updateSelectedFilesCount();
                     }
                     updateSelectedFilesCount(JSON.parse(response.response.installments));
-
                 }
 
                 function updateSelectedFilesCount(limited = false) {
