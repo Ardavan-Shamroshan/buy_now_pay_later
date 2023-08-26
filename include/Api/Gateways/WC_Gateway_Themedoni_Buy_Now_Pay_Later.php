@@ -26,11 +26,9 @@ function init_themedoni_buy_now_pay_later()
 		// Set this variable to specify a minimum order value
 		$minimum = get_option('woocommerce_WC_Gateway_Themedoni_Buy_Now_Pay_Later_settings')['min_purchase'] ?? 0;
 
-
 		if (WC()->cart->total < $minimum) {
 
 			if (is_cart()) {
-
 				wc_print_notice(
 					sprintf(
 						'مبلغ سبد خرید شما %s تومان است - برای استفاده از این درگاه پرداخت باید حداقل %s تومان در سبد خرید شما باشد.',
@@ -143,7 +141,7 @@ function init_themedoni_buy_now_pay_later()
 						'type'        => 'checkbox',
 						'label'       => __('فعالسازی درگاه پرداخت اقساطی با چک پیشرفته'),
 						'description' => __('برای فعالسازی درگاه پرداخت اقساطی با چک پیشرفته باید این قسمت را  را علامتگذاری کنید.'),
-						'default'     => 'yes',
+						'default'     => 'no',
 						'desc_tip'    => true,
 					],
 					'title'             => [
