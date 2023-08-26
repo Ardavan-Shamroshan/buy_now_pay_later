@@ -105,7 +105,6 @@ function validateNationalCode( $nationalCode ) {
 			return false;
 		}
 	}
-
 }
 
 

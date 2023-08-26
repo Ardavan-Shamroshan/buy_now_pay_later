@@ -37,6 +37,8 @@ class GatewayCallbacks {
 				}
 			}
 
+			// validate national code
+
 			update_post_meta( $order_id, 'themedoni_bnpl_extra_fields', $input );
 			update_post_meta( $order_id, 'themedoni_bnpl_cheque_condition', $_POST['name'] );
 

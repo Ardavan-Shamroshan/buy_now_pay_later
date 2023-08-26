@@ -15,6 +15,18 @@ function init_themedoni_buy_now_pay_later()
 		return $methods;
 	}
 
+	add_filter('woocommerce_currencies', 'woo_behpardakht_IR_currency');
+
+	function woo_behpardakht_IR_currency($currencies)
+	{
+		$currencies['IRR']  = __('ریال');
+		$currencies['IRT']  = __('تومان');
+		$currencies['IRHR'] = __('هزار ریال');
+		$currencies['IRHT'] = __('هزار تومان');
+
+		return $currencies;
+	}
+
 	/**
 	 * Set a minimum order amount for checkout
 	 */
@@ -27,7 +39,6 @@ function init_themedoni_buy_now_pay_later()
 		$minimum = get_option('woocommerce_WC_Gateway_Themedoni_Buy_Now_Pay_Later_settings')['min_purchase'] ?? 0;
 
 		if (WC()->cart->total < $minimum) {
-
 			if (is_cart()) {
 				wc_print_notice(
 					sprintf(
@@ -167,11 +178,11 @@ function init_themedoni_buy_now_pay_later()
 						'desc_tip'    => true,
 					],
 					'min_purchase'      => [
-						'title'       => __('حداقل مبلغ سبد خرید'),
+						'title'       => __('حداقل مبلغ سبد خرید  (' . get_woocommerce_currencies()[get_woocommerce_currency()] . ')'),
 						'type'        => 'number',
 						'desc_tip'    => true,
-						'description' => __('در صورتی که مبلغ سبد خرید مشتری از این مبلغ کمتر باشد، درگاه پرداخت با چک در آن سفارش نمایش داده نخواهد شد. این گز ینه کمک می کند تا برای مبالغ کم، امکان پر داخت چکی را غیرفعال کنید .'),
-						'placeholder' => 'تومان',
+						'description' => __('در صورتی که مبلغ سبد خرید مشتری از این مبلغ با واحد ' . get_woocommerce_currencies()[get_woocommerce_currency()] . ' کمتر باشد، درگاه پرداخت با چک در آن سفارش نمایش داده نخواهد شد. این گزینه کمک می کند تا برای مبالغ کم، امکان پر داخت چکی را غیرفعال کنید .'),
+						'placeholder' => get_woocommerce_currencies()[get_woocommerce_currency()],
 						'default'     => 0
 					],
 					'rules'             => [
@@ -195,7 +206,7 @@ function init_themedoni_buy_now_pay_later()
 		public function generate_rules_html()
 		{
 			ob_start();
-		?>
+?>
 
 			<tr>
 				<th scope="row" class="titledesc"><?php esc_html_e('قوانین:', 'themedoni'); ?></th>
