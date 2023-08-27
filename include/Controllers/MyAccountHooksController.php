@@ -6,7 +6,7 @@ class MyAccountHooksController extends BaseController
 {
     public function register()
     {
-        add_action('woocommerce_view_order', [$this, 'action_woocommerce_account_content'], 1);
+        add_action('woocommerce_view_order', [$this, 'action_woocommerce_account_content'], 11);
     }
 
     public function action_woocommerce_account_content($order_id)
