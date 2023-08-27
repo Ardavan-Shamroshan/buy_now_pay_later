@@ -17,6 +17,11 @@ jQuery(document).ready(function ($) {
                 .ajaxStart(function () {
                     $("#loading-container").addClass("opacity-20");
                     $("#loader").removeClass("hidden");
+                    // let inputs = $("form#loading-container input")
+                    // inputs.each(function (i) {
+                    //     console.log(inputs[i]);
+                    //     $(inputs[i]).prop('disabled', (i, v) => !v)
+                    // });
                 })
                 .ajaxStop(function () {
                     $("#loading-container").removeClass("opacity-20");
@@ -43,12 +48,10 @@ jQuery(document).ready(function ($) {
                     console.log(response);
                     $('#error-log').removeClass('hidden');
                     $('#error-message').html('عملیات با خطا مواجه شد');
-
                     setTimeout(function () {
                         $('#error-log').addClass('hidden');
                     }, 5000);
-
-                        location.reload(true)
+                    location.reload(true)
                     return;
                 } else {
                     let today = new Date();

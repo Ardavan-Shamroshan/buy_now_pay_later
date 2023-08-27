@@ -16,7 +16,23 @@
         </div>
 
 
-        <form id="loading-container" method="post" action="" enctype="multipart/form-data" class="grid max-w-2xl grid-cols-1 p-5 mx-auto border shadow-md gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10 rounded-xl shadow-indigo-500/20">
+        <div id="error-log" class="hidden mb-2 bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 p-1 shadow-md" role="alert">
+            <div class="flex">
+                <div class="px-1">
+                    <svg class="fill-current h-6 w-6 text-red-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-bold" id="error-message"></p>
+                </div>
+            </div>
+        </div>
+
+
+        <form id="loading-container" method="post" action="" enctype="multipart/form-data" class="grid max-w-2xl grid-cols-1 p-5 mx-auto border shadow-md gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10 rounded-xl shadow-indigo-500/20" style="border: 1px solid #9DABC5;">
+            <?php wp_nonce_field() ?>
+
             <div class="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
                 <div class="lg:pr-4">
                     <div class="lg:max-w-lg">
@@ -72,14 +88,16 @@
             </div>
             <div class="lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
                 <div>
-                    <div class="max-w-xl py-2 text-base leading-7 text-gray-700 lg:max-w-lg">
-                        <div class="p-5 border-2 border-gray-100 rounded-lg shadow">
+
+
+                    <div class="py-2 text-base leading-7 text-gray-700 lg:max-w-lg">
+                        <div class="p-5 border-2 border-gray-100 rounded-lg shadow cheque-calculator cheque-product-calculator" style="border: 1px solid #9DABC5;">
                             <div class="w-full gap-6 flex flex-row justify-between items-center">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">مبلغ سفارش:</p>
                                 <p class="font-bold"> <?= priceFormat($order->get_total()) ?></p>
                             </div>
 
-                            <ul class="flex flex-wrap flex-row w-full gap-2 ">
+                            <ul class="flex flex-wrap flex-row w-full gap-2 mt-2">
                                 <?php
                                 $i = -1;
                                 if ($this->cheque_conditions) :
@@ -88,7 +106,7 @@
                                 ?>
                                         <li>
                                             <input type="radio" id="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" name="themedoni_bnpl_order_condition_name" value="<?= esc_attr($condition['condition_name']) ?>" class="hidden peer" required>
-                                            <label for="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" class="font-bold w-full py-2 px-10 text-center text-indigo-500 shadow bg-white border border-indigo-600 rounded-sm cursor-pointer peer-checked:border-green-600 peer-checked:bg-green-50 peer-checked:text-green-600 hover:text-green-600 hover:border-green-600 hover:bg-green-100"><?= esc_attr($condition['condition_name']) ?></label>
+                                            <label for="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" class="font-bold w-full py-2 px-10 text-center shadow text-indigo-600 bg-white border border-indigo-600 rounded-sm cursor-pointer peer-checked:border-green-600 peer-checked:bg-green-50 peer-checked:text-green-600 hover:text-green-600 hover:border-green-600 hover:bg-green-100" style="border: 1px solid rgb(157, 171, 197)"><?= esc_attr($condition['condition_name']) ?></label>
                                         </li>
                                 <?php
                                     endforeach;
@@ -97,35 +115,36 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="relative max-w-xl py-2 text-base leading-7 text-gray-700 lg:max-w-lg">
+                    <div class="relative py-2 text-base leading-7 text-gray-700 lg:max-w-lg">
 
-                        <div class="p-5 border-2 border-gray-100 rounded-lg shadow">
-                            <div class="grid w-full gap-6 md:grid-cols-2">
+                        <div class="p-5 border-2 border-gray-100 rounded-lg shadow cheque-calculator cheque-product-calculator" style="border: 1px solid #9DABC5;">
+                            <div class="w-full gap-6 flex flex-row justify-between items-center">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">پیش پرداخت:</p>
                                 <p class="font-bold" id="bnpl_prepayment">-</p>
+
                             </div>
-                            <div class="grid w-full gap-6 md:grid-cols-2">
+                            <div class="w-full gap-6 flex flex-row justify-between items-center">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">تعداد چک ها:</p>
                                 <p class="font-bold" id="bnpl_installments">-</p>
                             </div>
-                            <div class="grid w-full gap-6 md:grid-cols-2">
+                            <div class="w-full gap-6 flex flex-row justify-between items-center">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">بازپرداخت:</p>
                                 <p class="font-bold" id="bnpl_term_of_installments">-</p>
                             </div>
-                            <div class="grid w-full gap-6 md:grid-cols-2">
+                            <div class="w-full gap-6 flex flex-row justify-between items-center">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">نرخ کارمزد:</p>
                                 <p class="font-bold" id="bnpl_commission_rate">-</p>
                             </div>
                             <hr>
-                            <div class="grid w-full gap-6 md:grid-cols-2">
+                            <div class="w-full gap-6 flex flex-row justify-between items-center">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">مبلغ نهایی:</p>
                                 <p class="font-bold" id="bnpl_final_price">-</p>
                             </div>
                         </div>
                     </div>
-                    <div class="max-w-xl py-2 text-base leading-7 text-gray-700 lg:max-w-lg">
-                        <div class="p-5 border-2 border-gray-100 rounded-lg shadow">
-                            <div class="grid w-full gap-6 md:grid-cols-2" id="bnpl_cheque_dates">
+                    <div class="py-2 text-base leading-7 text-gray-700">
+                        <div class="p-5 border-2 border-gray-100 rounded-lg shadow cheque-calculator cheque-product-calculator" style="border: 1px solid #9DABC5;">
+                            <div class="w-full gap-6 flex flex-row justify-between items-center" id="bnpl_cheque_dates">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">تاریخ چک :</p>
                                 <p class="font-bold">-</p>
                             </div>

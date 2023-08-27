@@ -12,11 +12,36 @@ class GatewayCallbacks
 		global $woocommerce;
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+			if (!wp_verify_nonce($_POST['_wpnonce'])) {
+				wp_die('Access Denied!');
+			}
+
+			if (empty($selected_condition)) {
+				wc_print_notice(sprintf("عملیات با خطا مواجه شد"), 'error');
+				return;
+			}
+
+			if ($_FILES['themedoni_bnpl_cheque_image'] != $selected_condition['installments']) {
+				wc_print_notice(sprintf("لطفا به تعداد چک های خواسته شده تصاویر را ارسال کنید", $selected_condition['installments']), 'error');
+				return;
+			}
+
+			$all_conditions = get_option('themedoni_buy_now_pay_later_cheque_conditions');
+			$key = array_search($_POST['themedoni_bnpl_order_condition_name'], array_column($all_conditions, 'condition_name'));
+			$selected_condition = $all_conditions[$key];
+
 			$files = [];
 			$input = [];
-
 			foreach ($extra_fields as $extra_field) {
 				$input[$extra_field['field_id']] = $_POST[$extra_field['field_id']];
+
+				if (empty($input[$extra_field['field_id']])) {
+					wc_print_notice(sprintf("همه موارد را با دقت پر کنید"), 'error');
+					return;
+				}
+
+				var_dump('hi');
+				die;
 
 				// if extra field has an input:file
 				if ($extra_field['field_type'] == 'file') {
@@ -27,10 +52,10 @@ class GatewayCallbacks
 				}
 			}
 
-			// validate national code
+			var_dump('low security');die;
 
 			update_post_meta($order_id, 'themedoni_bnpl_extra_fields', $input);
-			update_post_meta($order_id, 'themedoni_bnpl_cheque_condition', $_POST['themedoni_bnpl_order_condition_name']);
+			update_post_meta($order_id, 'themedoni_bnpl_cheque_condition', $selected_condition);
 
 			// upload cheque images
 
@@ -54,6 +79,8 @@ class GatewayCallbacks
 				}
 			}
 
+			var_dump('hiiiiii');
+			die;
 			$order->update_status('cheque_approval', 'در انتظار تایید چک'); // order note is optional, if you want to  add a note to order
 			$woocommerce->cart->empty_cart();
 		}

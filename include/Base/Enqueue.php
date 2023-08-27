@@ -34,7 +34,7 @@ class Enqueue extends BaseController {
 
 		wp_enqueue_script('bnplTailwindCssCdn', 'https://cdn.tailwindcss.com', [], null);
 		wp_enqueue_style('bnplTailwindCss');
-		// wp_enqueue_style('bnplChequePaymentCss');
+		wp_enqueue_style('bnplChequePaymentCss');
 		wp_enqueue_script('chequePaymentScript');
 		wp_localize_script(
 			'chequePaymentScript',

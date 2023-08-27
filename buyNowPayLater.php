@@ -61,11 +61,21 @@ function bnpl_get_term_of_installment()
 
 	$key = array_search($installment_name, array_column($installments, 'condition_name'));
 
-	echo json_encode([
-		'status'   => 'success',
-		'response' => $installments[$key] ?? [],
-		'order_total' => $_POST['orderTotal']
-	]);
+	
+	if ($key === false) {
+		
+		echo json_encode([
+			'status'   => 'error',
+			'response' => 'عملیات با خطا مواجه شد',
+		]);
+	} else {
+		echo json_encode([
+			'status'   => 'success',
+			'response' => $installments[$key] ?? [],
+			'order_total' => $_POST['orderTotal']
+		]);
+	}
+
 	wp_die();
 }
 
