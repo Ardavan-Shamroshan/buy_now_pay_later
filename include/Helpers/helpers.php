@@ -46,10 +46,10 @@ function convertEnglishToPersian( $number ) {
 	return $number;
 }
 
-function priceFormat( $price ) {
+function priceFormat( $price) {
 	$price = number_format( $price, 0, '/', ',' );
 	$price = convertEnglishToPersian( $price );
-	$price .= ' تومان';
+	// $price .= ' تومان';
 
 	return $price;
 }

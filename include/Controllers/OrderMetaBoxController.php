@@ -36,6 +36,8 @@ class OrderMetaBoxController extends BaseController
 
 	public function add_cheque_order_field_content($post)
 	{
+		ob_start();
+		
 		$order = wc_get_order($post->ID); // Get the WC_Order object
 
 		$extra_fields      = get_option('themedoni_buy_now_pay_later_extra_fields');
@@ -51,6 +53,8 @@ class OrderMetaBoxController extends BaseController
 
 		extract([$order, $extra_fields, $cheque_conditions, $order_extra_fields_value, $order_cheques, $order_cheque_condition, $final_price, $prepayment_price, $every_installment_price]);
 		include_once $this->plugin_path . '/templates/order-metabox.php';
+
+		ob_get_clean();
 	}
 
 	public function gateway_calculator($order_total, $order_cheque_condition)

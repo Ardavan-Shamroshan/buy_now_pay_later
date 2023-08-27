@@ -40,9 +40,6 @@ class GatewayCallbacks
 					return;
 				}
 
-				var_dump('hi');
-				die;
-
 				// if extra field has an input:file
 				if ($extra_field['field_type'] == 'file') {
 					if (isset($_FILES) && $_FILES[$extra_field['field_id']]) {
@@ -51,8 +48,6 @@ class GatewayCallbacks
 					}
 				}
 			}
-
-			var_dump('low security');die;
 
 			update_post_meta($order_id, 'themedoni_bnpl_extra_fields', $input);
 			update_post_meta($order_id, 'themedoni_bnpl_cheque_condition', $selected_condition);
@@ -79,20 +74,9 @@ class GatewayCallbacks
 				}
 			}
 
-			var_dump('hiiiiii');
-			die;
 			$order->update_status('cheque_approval', 'در انتظار تایید چک'); // order note is optional, if you want to  add a note to order
 			$woocommerce->cart->empty_cart();
 		}
-	}
-
-
-	public function return_from_cheque_payment_page($order_id)
-	{
-		wp_redirect(home_url());
-		$order = new WC_Order($order_id);
-		extract([$order]);
-		include_once BNPL_PATH . 'templates/gateways/cheque-paid-page.php';
 	}
 
 
@@ -111,5 +95,17 @@ class GatewayCallbacks
 
 		// Construct the attachment array.
 		return $file;
+	}
+
+
+
+
+
+	public function return_from_cheque_payment_page($order_id)
+	{
+		wp_redirect(home_url());
+		$order = new WC_Order($order_id);
+		extract([$order]);
+		include_once BNPL_PATH . 'templates/gateways/cheque-paid-page.php';
 	}
 }
