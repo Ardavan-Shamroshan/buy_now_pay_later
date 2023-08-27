@@ -94,7 +94,7 @@
                         <div class="p-5 border-2 border-gray-100 rounded-lg shadow cheque-calculator cheque-product-calculator" style="border: 1px solid #9DABC5;">
                             <div class="w-full gap-6 flex flex-row justify-between items-center">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">مبلغ سفارش:</p>
-                                <p class="font-bold"> <?= priceFormat($order->get_total()) ?></p>
+                                <p class="font-bold"><bdi><?= priceFormat($order->get_total()) ?><span class="woocommerce-Price-currencySymbol"><?= get_woocommerce_currencies()[get_woocommerce_currency()] ?></span></bdi></span> </p>
                             </div>
 
                             <ul class="flex flex-wrap flex-row w-full gap-2 mt-2">

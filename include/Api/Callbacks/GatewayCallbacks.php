@@ -12,23 +12,21 @@ class GatewayCallbacks
 		global $woocommerce;
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+			$all_conditions = get_option('themedoni_buy_now_pay_later_cheque_conditions');
+			$key = array_search($_POST['themedoni_bnpl_order_condition_name'], array_column($all_conditions, 'condition_name'));
+			$selected_condition = $all_conditions[$key];
+
 			if (!wp_verify_nonce($_POST['_wpnonce'])) {
 				wp_die('Access Denied!');
 			}
 
 			if (empty($selected_condition)) {
-				wc_print_notice(sprintf("عملیات با خطا مواجه شد"), 'error');
-				return;
+				wc_print_notice(sprintf("عملیات با خطا مواجه شد"), 'error', [], true);
 			}
 
 			if ($_FILES['themedoni_bnpl_cheque_image'] != $selected_condition['installments']) {
-				wc_print_notice(sprintf("لطفا به تعداد چک های خواسته شده تصاویر را ارسال کنید", $selected_condition['installments']), 'error');
-				return;
+				wc_print_notice(sprintf("لطفا به تعداد چک های خواسته شده تصاویر را ارسال کنید", $selected_condition['installments']), 'error', [], true);
 			}
-
-			$all_conditions = get_option('themedoni_buy_now_pay_later_cheque_conditions');
-			$key = array_search($_POST['themedoni_bnpl_order_condition_name'], array_column($all_conditions, 'condition_name'));
-			$selected_condition = $all_conditions[$key];
 
 			$files = [];
 			$input = [];
@@ -36,15 +34,15 @@ class GatewayCallbacks
 				$input[$extra_field['field_id']] = $_POST[$extra_field['field_id']];
 
 				if (empty($input[$extra_field['field_id']])) {
-					wc_print_notice(sprintf("همه موارد را با دقت پر کنید"), 'error');
-					return;
+					wc_print_notice(sprintf("همه موارد را با دقت پر کنید"), 'error', [], true);
 				}
 
 				// if extra field has an input:file
 				if ($extra_field['field_type'] == 'file') {
 					if (isset($_FILES) && $_FILES[$extra_field['field_id']]) {
 						$attachment = $this->uploadFile($_FILES[$extra_field['field_id']]);
-						$input[$extra_field['field_id']] = $attachment['url'];
+						if ($attachment)
+							$input[$extra_field['field_id']] = $attachment['url'];
 					}
 				}
 			}
@@ -69,8 +67,10 @@ class GatewayCallbacks
 
 				foreach ($cheque_files as $cheque_file) {
 					$cheque_attachment = $this->uploadFile($cheque_file);
-					$files[]       = $cheque_attachment['url'];
-					update_post_meta($order_id, 'themedoni_bnpl_cheque', $files);
+					if ($cheque_attachment) {
+						$files[]       = $cheque_attachment['url'];
+						update_post_meta($order_id, 'themedoni_bnpl_cheque', $files);
+					}
 				}
 			}
 
@@ -86,8 +86,8 @@ class GatewayCallbacks
 			require_once(ABSPATH . 'wp-admin/includes/file.php');
 		}
 
-		$overrides = ['test_form' => false, 'mimes' => ['jpg' => 'image/jpeg, image/pjpeg', 'jpeg' => 'image/jpeg, image/pjpeg', 'png' => 'image/png']];
-		$file = wp_handle_upload($file, $overrides,);
+		$overrides = ['test_form' => false, 'mimes' => ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png']];
+		$file = wp_handle_upload($file, $overrides);
 
 		if (isset($file['error'])) {
 			return 0;
