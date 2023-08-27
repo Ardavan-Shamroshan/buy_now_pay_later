@@ -105,7 +105,7 @@
                                         $i++;
                                 ?>
                                         <li>
-                                            <input type="radio" id="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" name="themedoni_bnpl_order_condition_name" value="<?= esc_attr($condition['condition_name']) ?>" class="hidden peer" required>
+                                            <input type="radio" id="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" name="themedoni_bnpl_order_condition_name" value="<?= esc_attr($condition['condition_name']) ?>" class="hidden peer" required <?= ($i == 0) ?  'checked' : '' ?>>
                                             <label for="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" class="font-bold w-full py-2 px-10 text-center shadow text-indigo-600 bg-white border border-indigo-600 rounded-sm cursor-pointer peer-checked:border-green-600 peer-checked:bg-green-50 peer-checked:text-green-600 hover:text-green-600 hover:border-green-600 hover:bg-green-100" style="border: 1px solid rgb(157, 171, 197)"><?= esc_attr($condition['condition_name']) ?></label>
                                         </li>
                                 <?php
@@ -144,7 +144,7 @@
                     </div>
                     <div class="py-2 text-base leading-7 text-gray-700">
                         <div class="p-5 border-2 border-gray-100 rounded-lg shadow cheque-calculator cheque-product-calculator" style="border: 1px solid #9DABC5;">
-                            <div class="w-full gap-6 flex flex-row justify-between items-center" id="bnpl_cheque_dates">
+                            <div class="w-full gap-6 flex flex-col justify-between" id="bnpl_cheque_dates">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">تاریخ چک :</p>
                                 <p class="font-bold">-</p>
                             </div>

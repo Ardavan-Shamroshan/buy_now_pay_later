@@ -1,8 +1,28 @@
 
 
 jQuery(document).ready(function ($) {
+    console.log();
+
     let order_total = $('input[name="themedoni_bnpl_order_total"]').val();
     $("#bnpl-container #rules ul").addClass("list-disc text-slate-500");
+    
+
+    let checked_input = $('input[name="themedoni_bnpl_order_condition_name"]:checked').val();
+    if (typeof checked_input != 'undefined') {
+        console.log(checked_input);
+        $(document)
+            .ajaxStart(function () {
+                $("#loading-container").addClass("opacity-20");
+                $("#loader").removeClass("hidden");
+            })
+            .ajaxStop(function () {
+                $("#loading-container").removeClass("opacity-20");
+                $("#loader").addClass("hidden");
+            });
+
+        handleAjax(checked_input, order_total);
+    }
+
 
     $('input[name="themedoni_bnpl_order_condition_name"]').on(
         "click",
@@ -12,7 +32,7 @@ jQuery(document).ready(function ($) {
             let installment_name = $(
                 'input[name="themedoni_bnpl_order_condition_name"]:checked'
             ).val();
-
+           
             $(document)
                 .ajaxStart(function () {
                     $("#loading-container").addClass("opacity-20");
@@ -92,11 +112,11 @@ jQuery(document).ready(function ($) {
                         let mydate = new Date(result);
                         let mypersiandate = mydate.toLocaleDateString("fa-IR");
                         $(
-                            '<p class="text-base font-semibold leading-7 text-indigo-600"> تاریخ چک ' +
+                            '<div class="flex flex-row justify-between items-center"><p class="text-base font-semibold leading-7 text-indigo-600"> تاریخ چک ' +
                             toFarsiNumber(counter) +
                             ': </p><p class="font-bold">' +
                             mypersiandate +
-                            "</p>"
+                            "</p></div>"
                         ).appendTo("#bnpl_cheque_dates");
                         counter++;
                     }
