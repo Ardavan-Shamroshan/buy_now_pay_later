@@ -9,35 +9,20 @@ class GatewayCallbacks
 	public function redirect_to_cheque_payment_page($order_id, $extra_fields)
 	{
 		$order = new WC_Order($order_id);
-
 		global $woocommerce;
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-			$files            = [];
-			$wp_upload_path   = wp_upload_dir();
-			$bnpl_upload_path = $wp_upload_path['basedir'] . '/bnpl_uploads/' . date('Y') . '/' . date('m') . '/';
-			$bnpl_upload_url  = '/bnpl_uploads/' . date('Y') . '/' . date('m') . '/';
-
-			if (!file_exists($bnpl_upload_path)) {
-				wp_mkdir_p($bnpl_upload_path);
-			}
-
-
+			$files = [];
 			$input = [];
+
 			foreach ($extra_fields as $extra_field) {
 				$input[$extra_field['field_id']] = $_POST[$extra_field['field_id']];
 
 				// if extra field has an input:file
 				if ($extra_field['field_type'] == 'file') {
 					if (isset($_FILES) && $_FILES[$extra_field['field_id']]) {
-						// $this->uploadFile($_FILES[$extra_field['field_id']]);
-
-						$file_name     = explode('.', $_FILES[$extra_field['field_id']]['name']);
-						$new_file_name = rand(100000000, 9999999999) . '.' . $file_name[1];
-						$result        = move_uploaded_file($_FILES[$extra_field['field_id']]['tmp_name'], $bnpl_upload_path . $new_file_name);
-						if ($result) {
-							$input[$extra_field['field_id']] = $bnpl_upload_url . $new_file_name;
-						}
+						$attachment = $this->uploadFile($_FILES[$extra_field['field_id']]);
+						$input[$extra_field['field_id']] = $attachment['url'];
 					}
 				}
 			}
@@ -45,7 +30,7 @@ class GatewayCallbacks
 			// validate national code
 
 			update_post_meta($order_id, 'themedoni_bnpl_extra_fields', $input);
-			update_post_meta($order_id, 'themedoni_bnpl_cheque_condition', $_POST['name']);
+			update_post_meta($order_id, 'themedoni_bnpl_cheque_condition', $_POST['themedoni_bnpl_order_condition_name']);
 
 			// upload cheque images
 
@@ -63,14 +48,9 @@ class GatewayCallbacks
 				}
 
 				foreach ($cheque_files as $cheque_file) {
-					// $this->uploadFile($cheque_file);
-					$file_name     = explode('.', $cheque_file['name']);
-					$new_file_name = rand(100000000, 9999999999) . '.' . $file_name[1];
-					$result        = move_uploaded_file($cheque_file['tmp_name'], $bnpl_upload_path . $new_file_name);
-					$files[]       = $bnpl_upload_url . $new_file_name;
-					if ($result) {
-						update_post_meta($order_id, 'themedoni_bnpl_cheque', $files);
-					}
+					$cheque_attachment = $this->uploadFile($cheque_file);
+					$files[]       = $cheque_attachment['url'];
+					update_post_meta($order_id, 'themedoni_bnpl_cheque', $files);
 				}
 			}
 
@@ -88,36 +68,21 @@ class GatewayCallbacks
 		include_once BNPL_PATH . 'templates/gateways/cheque-paid-page.php';
 	}
 
-	
-	// public function uploadFile($file)
-	// {
-	// 	if (!function_exists('wp_handle_upload')) {
-	// 		require_once(ABSPATH . 'wp-admin/includes/file.php');
-	// 	}
 
-	// 	$overrides = ['test_form' => false, 'mimes' => ['jpg' => 'image/jpeg, image/pjpeg', 'jpeg' => 'image/jpeg, image/pjpeg', 'png' => 'image/png']];
-	// 	$file = wp_handle_upload($file, $overrides,);
+	public function uploadFile($file)
+	{
+		if (!function_exists('wp_handle_upload')) {
+			require_once(ABSPATH . 'wp-admin/includes/file.php');
+		}
 
-	// 	if (isset($file['error'])) {
-	// 		return 0;
-	// 	}
+		$overrides = ['test_form' => false, 'mimes' => ['jpg' => 'image/jpeg, image/pjpeg', 'jpeg' => 'image/jpeg, image/pjpeg', 'png' => 'image/png']];
+		$file = wp_handle_upload($file, $overrides,);
 
-	// 	$url = $file['url'];
-	// 	$type = $file['type'];
-	// 	$file = $file['file'];
-	// 	$filename = wp_basename($file);
+		if (isset($file['error'])) {
+			return 0;
+		}
 
-	// 	// Construct the attachment array.
-	// 	$attachment = [
-	// 		'post_title' => $filename,
-	// 		'post_content' => $url,
-	// 		'post_mime_type' => $type,
-	// 		'guid' => $url,
-	// 		'context' => 'custom-background',
-	// 	];
-
-	// 	$id = wp_insert_attachment($attachment, $file);
-	// 	return $id;
-	// }
-
+		// Construct the attachment array.
+		return $file;
+	}
 }

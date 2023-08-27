@@ -1,4 +1,4 @@
-<div id="bnpl-container">
+<div id="bnpl-container" class="my-2">
     <input type="hidden" name="themedoni_bnpl_order_total" value="<?= $order->get_total() ?>">
     <div class="relative px-6 py-5 overflow-hidden bg-white isolate lg:overflow-visible lg:px-0">
 
@@ -26,19 +26,32 @@
             </div>
             <div class="lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden">
                 <div class="w-full" id="bnpl_installments_container">
+                    <div class="mb-2 bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 p-1 shadow-md" role="alert">
+                        <div class="flex">
+                            <div class="px-1">
+                                <svg class="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-bold">برای انتخاب چند عکس آنها را با هم انتخاب کنید</p>
+                                <p class="text-sm">با نگهداشتن دکمه ctrl میتوانید چند عکس را انتخاب کنید و یا به درون کادر زیر بکشید </p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="p-4 border-2 border-gray-100 rounded-lg">
                         <div class="flex mb-4 flex-col cursor-pointer ">
                             <div id="drop-zone" class="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col justify-center items-center text-gray-400 text-lg hover:bg-gray-100">
                                 <span>تصاویر را به اینجا بکشید و یا</span>
-                                <label for="file-input" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"> انتخاب کنید</label>
+                                <label for="file-input" class="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"> انتخاب کنید</label>
                                 <input id="file-input" type="file" multiple class="hidden " name="themedoni_bnpl_cheque_image[]" />
-
                             </div>
                             <div id="selected-files-count" class="text-gray-500 text-sm font-medium"></div>
                             <div id="selected-images" class="flex flex-wrap -mx-2 mt-6"></div>
                         </div>
 
                     </div>
+
                 </div>
                 <div class="w-full py-2">
                     <?php foreach ($this->extra_fields as $field) : ?>
@@ -51,16 +64,17 @@
                 </div>
 
                 <div class="flex items-center justify-end mt-6 gap-x-2">
-                    <button type="submit" name="themedoni_bnpl_submit" value="themedoni_bnpl_submit" class="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">ارسال
+                    <button type="submit" name="themedoni_bnpl_submit" value="themedoni_bnpl_submit" class="rounded-md bg-green-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500">ارسال
                     </button>
                     <button type="button" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">بازگشت</button>
+
                 </div>
             </div>
             <div class="lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
                 <div>
                     <div class="max-w-xl py-2 text-base leading-7 text-gray-700 lg:max-w-lg">
-                        <div class="p-5 border-2 border-gray-100 rounded-lg">
-                            <div class="grid w-full gap-6 md:grid-cols-2">
+                        <div class="p-5 border-2 border-gray-100 rounded-lg shadow">
+                            <div class="w-full gap-6 flex flex-row justify-between items-center">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">مبلغ سفارش:</p>
                                 <p class="font-bold"> <?= priceFormat($order->get_total()) ?></p>
                             </div>
@@ -74,7 +88,7 @@
                                 ?>
                                         <li>
                                             <input type="radio" id="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" name="themedoni_bnpl_order_condition_name" value="<?= esc_attr($condition['condition_name']) ?>" class="hidden peer" required>
-                                            <label for="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" class=" w-full py-2 px-10 text-center text-gray-500 bg-white border border-gray-200 rounded-md cursor-pointer peer-checked:border-blue-600 peer-checked:bg-indigo-50 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"><?= esc_attr($condition['condition_name']) ?></label>
+                                            <label for="themedoni_bnpl_order_condition_name[<?= esc_attr($i) ?>]" class="font-bold w-full py-2 px-10 text-center text-indigo-500 shadow bg-white border border-indigo-600 rounded-sm cursor-pointer peer-checked:border-green-600 peer-checked:bg-green-50 peer-checked:text-green-600 hover:text-green-600 hover:border-green-600 hover:bg-green-100"><?= esc_attr($condition['condition_name']) ?></label>
                                         </li>
                                 <?php
                                     endforeach;
@@ -85,7 +99,7 @@
                     </div>
                     <div class="relative max-w-xl py-2 text-base leading-7 text-gray-700 lg:max-w-lg">
 
-                        <div class="p-5 border-2 border-gray-100 rounded-lg">
+                        <div class="p-5 border-2 border-gray-100 rounded-lg shadow">
                             <div class="grid w-full gap-6 md:grid-cols-2">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">پیش پرداخت:</p>
                                 <p class="font-bold" id="bnpl_prepayment">-</p>
@@ -110,7 +124,7 @@
                         </div>
                     </div>
                     <div class="max-w-xl py-2 text-base leading-7 text-gray-700 lg:max-w-lg">
-                        <div class="p-5 border-2 border-gray-100 rounded-lg">
+                        <div class="p-5 border-2 border-gray-100 rounded-lg shadow">
                             <div class="grid w-full gap-6 md:grid-cols-2" id="bnpl_cheque_dates">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">تاریخ چک :</p>
                                 <p class="font-bold">-</p>

@@ -30,7 +30,8 @@ final class Init {
 
 			Controllers\GatewayHooksController::class,
 			Controllers\BuyNowPayLaterController::class,
-			Controllers\OrderMetaBoxController::class
+			Controllers\OrderMetaBoxController::class,
+			Controllers\MyAccountHooksController::class
 		];
 	}
 
