@@ -182,7 +182,7 @@ jQuery(document).ready(function ($) {
                     if (count > 0) {
                         selectedFilesCount.textContent = `${count} مورد انتخاب شده`;
                     } else if (limited) {
-                        selectedFilesCount.textContent = `نمیتوان بیشتر از ${limited} مورد`;
+                        selectedFilesCount.textContent = `نمیتوان بیشتر از ${limited} مورد انتخاب کرد`;
                     }
                     else {
                         selectedFilesCount.textContent = "";
