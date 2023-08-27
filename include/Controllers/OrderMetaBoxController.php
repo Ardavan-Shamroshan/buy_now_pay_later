@@ -16,6 +16,7 @@ class OrderMetaBoxController extends BaseController
 	{
 		global $pagenow, $post;
 
+		
 		$post_type = get_post_type($post->ID);
 
 		if ($pagenow != 'post.php' && $_GET['action'] != 'edit') return; // Exit
@@ -28,16 +29,17 @@ class OrderMetaBoxController extends BaseController
 	private function add_shop_order_meta_boxes($post_type, $post)
 	{
 		$order = wc_get_order($post->ID); // Get the WC_Order object
+		
 		if ($order->get_payment_method() != 'WC_Gateway_Themedoni_Buy_Now_Pay_Later') {
 			return;
 		}
+
 		add_meta_box('cheque_order_field', __('اطلاعات چک ها'), [$this, 'add_cheque_order_field_content'], 'shop_order');
 	}
 
 	public function add_cheque_order_field_content($post)
 	{
-		ob_start();
-		
+
 		$order = wc_get_order($post->ID); // Get the WC_Order object
 
 		$extra_fields      = get_option('themedoni_buy_now_pay_later_extra_fields');
@@ -54,7 +56,6 @@ class OrderMetaBoxController extends BaseController
 		extract([$order, $extra_fields, $cheque_conditions, $order_extra_fields_value, $order_cheques, $order_cheque_condition, $final_price, $prepayment_price, $every_installment_price]);
 		include_once $this->plugin_path . '/templates/order-metabox.php';
 
-		ob_get_clean();
 	}
 
 	public function gateway_calculator($order_total, $order_cheque_condition)

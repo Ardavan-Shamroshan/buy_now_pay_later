@@ -21,6 +21,10 @@ class Enqueue extends BaseController {
 		// override
 		wp_enqueue_style( 'peachCoreStyle', $this->plugin_url . 'assets/override.css', [], null );
 		wp_enqueue_script( 'peachCoreScript', $this->plugin_url . 'assets/override.js', [], null );
+
+		wp_register_style('bnplChequePaymentCss', BNPL_URL . '/assets/cheque-payment.css', [], BuyNowPayLaterVersion);
+		wp_enqueue_style('bnplChequePaymentCss');
+
 	}
 
 	/**

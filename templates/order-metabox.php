@@ -1,4 +1,5 @@
 <div class="themedoni-cheque-info">
+
     <div class="cheque-main-info">
         <h3>اطلاعات چک ها</h3>
         <ul class="cheque-rule">
@@ -60,11 +61,12 @@
                     <?php endif; ?>
                 </ul>
             <?php endforeach; ?>
-        <?php die;
+        <?php 
         endif; ?>
     </div>
 
-    <?php if (!empty($order_cheques)) :
+    <?php
+    if (!empty($order_cheques)) :
         foreach ($order_cheques as $cheque) : ?>
             <div class="cheque-images">
                 <h3>تصاویر چک ها</h3>
@@ -74,5 +76,4 @@
     <?php else : ?>
         <h3 style="color: #999">موردی وجود ندارد</h3>
     <?php endif; ?>
-
 </div>
