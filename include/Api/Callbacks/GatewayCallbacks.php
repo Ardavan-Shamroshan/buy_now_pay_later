@@ -92,8 +92,8 @@ class GatewayCallbacks {
 				}
 			}
 
-			// $order->update_status('cheque_approval', 'در انتظار تایید چک'); // order note is optional, if you want to  add a note to order
-			// $woocommerce->cart->empty_cart();
+			$order->update_status('cheque_approval', 'در انتظار تایید چک'); // order note is optional, if you want to  add a note to order
+			$woocommerce->cart->empty_cart();
 			return true;
 		}
 	}

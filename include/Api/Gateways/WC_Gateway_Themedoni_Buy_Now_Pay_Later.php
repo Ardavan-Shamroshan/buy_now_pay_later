@@ -170,6 +170,14 @@ function init_themedoni_buy_now_pay_later() {
 						'default'     => 'yes',
 						'desc_tip'    => true,
 					],
+					'calculator'        => [
+						'title'       => __( 'فعال سازی ماشین حساب' ),
+						'type'        => 'checkbox',
+						'label'       => __( 'فعال سازی ماشین حساب در صفحه نمایش محصول' ),
+						'description' => __( 'با فعال کردن این گزینه یک ماشین حساب به صفحه نمایش محصول اضافه میشود' ),
+						'default'     => 'yes',
+						'desc_tip'    => true,
+					],
 					'min_purchase'      => [
 						'title'       => __( 'حداقل مبلغ سبد خرید  (' . get_woocommerce_currencies()[ get_woocommerce_currency() ] . ')' ),
 						'type'        => 'number',
