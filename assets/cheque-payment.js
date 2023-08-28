@@ -9,7 +9,6 @@ jQuery(document).ready(function ($) {
 
     let checked_input = $('input[name="themedoni_bnpl_order_condition_name"]:checked').val();
     if (typeof checked_input != 'undefined') {
-        console.log(checked_input);
         $(document)
             .ajaxStart(function () {
                 $("#loading-container").addClass("opacity-20");
@@ -37,11 +36,6 @@ jQuery(document).ready(function ($) {
                 .ajaxStart(function () {
                     $("#loading-container").addClass("opacity-20");
                     $("#loader").removeClass("hidden");
-                    // let inputs = $("form#loading-container input")
-                    // inputs.each(function (i) {
-                    //     console.log(inputs[i]);
-                    //     $(inputs[i]).prop('disabled', (i, v) => !v)
-                    // });
                 })
                 .ajaxStop(function () {
                     $("#loading-container").removeClass("opacity-20");
