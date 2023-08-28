@@ -115,101 +115,105 @@ jQuery(document).ready(function ($) {
                         counter++;
                     }
 
-                    const fileInput = document.getElementById("file-input");
-                    const dropZone = document.getElementById("drop-zone");
-                    const selectedImages = document.getElementById("selected-images");
-                    const selectButton = document.getElementById("select-button");
-                    const selectedFilesCount = document.getElementById(
-                        "selected-files-count"
-                    );
+                    if(typeof fileInput != "undefined") {
+                        const fileInput = document.getElementById("file-input");
+                        const dropZone = document.getElementById("drop-zone");
+                        const selectedImages = document.getElementById("selected-images");
+                        const selectButton = document.getElementById("select-button");
+                        const selectedFilesCount = document.getElementById(
+                            "selected-files-count"
+                        );
 
-                    fileInput.addEventListener("change", handleFiles);
-                    dropZone.addEventListener("dragover", handleDragOver);
-                    dropZone.addEventListener("dragleave", handleDragLeave);
-                    dropZone.addEventListener("drop", handleDrop);
+                        fileInput.addEventListener("change", handleFiles);
+                        dropZone.addEventListener("dragover", handleDragOver);
+                        dropZone.addEventListener("dragleave", handleDragLeave);
+                        dropZone.addEventListener("drop", handleDrop);
 
-                    function handleFiles() {
-                        const fileList = this.files;
-                        displayImages(fileList);
-                    }
-                    function handleDragOver(event) {
-                        event.preventDefault();
-                        dropZone.classList.add("border-blue-500");
-                        dropZone.classList.add("text-blue-500");
-                    }
+                        function handleFiles() {
+                            const fileList = this.files;
+                            displayImages(fileList);
+                        }
+                        function handleDragOver(event) {
+                            event.preventDefault();
+                            dropZone.classList.add("border-blue-500");
+                            dropZone.classList.add("text-blue-500");
+                        }
 
-                    function handleDragLeave(event) {
-                        event.preventDefault();
-                        dropZone.classList.remove("border-blue-500");
-                        dropZone.classList.remove("text-blue-500");
-                    }
+                        function handleDragLeave(event) {
+                            event.preventDefault();
+                            dropZone.classList.remove("border-blue-500");
+                            dropZone.classList.remove("text-blue-500");
+                        }
 
-                    function handleDrop(event) {
-                        event.preventDefault();
-                        const fileList = event.dataTransfer.files;
-                        displayImages(fileList);
-                        dropZone.classList.remove("border-blue-500");
-                        dropZone.classList.remove("text-blue-500");
-                    }
+                        function handleDrop(event) {
+                            event.preventDefault();
+                            const fileList = event.dataTransfer.files;
+                            displayImages(fileList);
+                            dropZone.classList.remove("border-blue-500");
+                            dropZone.classList.remove("text-blue-500");
+                        }
 
-                    function displayImages(fileList) {
-                        if (!(fileList.length > JSON.parse(response.response.installments))) {
+                        function displayImages(fileList) {
+                            if (!(fileList.length > JSON.parse(response.response.installments))) {
 
-                            selectedImages.innerHTML = "";
-                            for (const file of fileList) {
-                                const imageWrapper = document.createElement("div");
-                                imageWrapper.classList.add("relative", "mx-2", "mb-2");
-                                const image = document.createElement("img");
-                                image.src = URL.createObjectURL(file);
-                                image.classList.add("w-32", "h-32", "object-cover", "rounded-lg");
-                                const removeButton = document.createElement("button");
-                                removeButton.innerHTML = "&times;";
-                                removeButton.classList.add(
-                                    "absolute",
-                                    "top-1",
-                                    "right-1",
-                                    "h-6",
-                                    "w-6",
-                                    "bg-gray-700",
-                                    "text-white",
-                                    "text-xs",
-                                    "rounded-full",
-                                    "flex",
-                                    "items-center",
-                                    "justify-center",
-                                    "opacity-50",
-                                    "hover:opacity-100",
-                                    "transition-opacity",
-                                    "focus:outline-none"
-                                );
+                                selectedImages.innerHTML = "";
+                                for (const file of fileList) {
+                                    const imageWrapper = document.createElement("div");
+                                    imageWrapper.classList.add("relative", "mx-2", "mb-2");
+                                    const image = document.createElement("img");
+                                    image.src = URL.createObjectURL(file);
+                                    image.classList.add("w-32", "h-32", "object-cover", "rounded-lg");
+                                    const removeButton = document.createElement("button");
+                                    removeButton.innerHTML = "&times;";
+                                    removeButton.classList.add(
+                                        "absolute",
+                                        "top-1",
+                                        "right-1",
+                                        "h-6",
+                                        "w-6",
+                                        "bg-gray-700",
+                                        "text-white",
+                                        "text-xs",
+                                        "rounded-full",
+                                        "flex",
+                                        "items-center",
+                                        "justify-center",
+                                        "opacity-50",
+                                        "hover:opacity-100",
+                                        "transition-opacity",
+                                        "focus:outline-none"
+                                    );
 
-                                removeButton.addEventListener("click", (event) => {
-                                    event.stopPropagation();
-                                    imageWrapper.remove();
-                                    updateSelectedFilesCount();
-                                });
+                                    removeButton.addEventListener("click", (event) => {
+                                        event.stopPropagation();
+                                        imageWrapper.remove();
+                                        updateSelectedFilesCount();
+                                    });
 
-                                imageWrapper.appendChild(image);
-                                imageWrapper.appendChild(removeButton);
-                                selectedImages.appendChild(imageWrapper);
+                                    imageWrapper.appendChild(image);
+                                    imageWrapper.appendChild(removeButton);
+                                    selectedImages.appendChild(imageWrapper);
+                                }
+                                updateSelectedFilesCount();
                             }
-                            updateSelectedFilesCount();
+                            updateSelectedFilesCount(JSON.parse(response.response.installments));
                         }
-                        updateSelectedFilesCount(JSON.parse(response.response.installments));
+
+                        function updateSelectedFilesCount(limited = false) {
+
+                            const count = selectedImages.children.length;
+                            if (count > 0) {
+                                selectedFilesCount.textContent = `${count} مورد انتخاب شده`;
+                            } else if (limited) {
+                                selectedFilesCount.textContent = `نمیتوان بیشتر از ${limited} مورد انتخاب کرد`;
+                            }
+                            else {
+                                selectedFilesCount.textContent = "";
+                            }
+                        }
                     }
 
-                    function updateSelectedFilesCount(limited = false) {
 
-                        const count = selectedImages.children.length;
-                        if (count > 0) {
-                            selectedFilesCount.textContent = `${count} مورد انتخاب شده`;
-                        } else if (limited) {
-                            selectedFilesCount.textContent = `نمیتوان بیشتر از ${limited} مورد انتخاب کرد`;
-                        }
-                        else {
-                            selectedFilesCount.textContent = "";
-                        }
-                    }
                 }
             },
             error: function (error) {
