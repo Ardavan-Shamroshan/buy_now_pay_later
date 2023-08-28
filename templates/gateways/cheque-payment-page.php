@@ -32,7 +32,7 @@
         </div>
 
 
-        <form id="loading-container" method="post" action="" enctype="multipart/form-data" class="grid max-w-2xl grid-cols-1 p-5 mx-auto border shadow-md gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10 rounded-xl shadow-indigo-500/20"
+        <form id="loading-container" method="post" action="" enctype="multipart/form-data" class="grid bg-white max-w-2xl grid-cols-1 p-5 mx-auto border shadow-md gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10 rounded-xl shadow-indigo-500/20"
               style="border: 1px solid #9DABC5;">
 			<?php wp_nonce_field() ?>
 

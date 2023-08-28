@@ -1,11 +1,9 @@
-
-
 jQuery(document).ready(function ($) {
     console.log();
 
     let order_total = $('input[name="themedoni_bnpl_order_total"]').val();
     $("#bnpl-container #rules ul").addClass("list-disc text-slate-500");
-    
+
 
     let checked_input = $('input[name="themedoni_bnpl_order_condition_name"]:checked').val();
     if (typeof checked_input != 'undefined') {
@@ -31,7 +29,7 @@ jQuery(document).ready(function ($) {
             let installment_name = $(
                 'input[name="themedoni_bnpl_order_condition_name"]:checked'
             ).val();
-           
+
             $(document)
                 .ajaxStart(function () {
                     $("#loading-container").addClass("opacity-20");
@@ -115,15 +113,16 @@ jQuery(document).ready(function ($) {
                         counter++;
                     }
 
-                    if(typeof fileInput != "undefined") {
-                        const fileInput = document.getElementById("file-input");
-                        const dropZone = document.getElementById("drop-zone");
-                        const selectedImages = document.getElementById("selected-images");
-                        const selectButton = document.getElementById("select-button");
-                        const selectedFilesCount = document.getElementById(
-                            "selected-files-count"
-                        );
 
+                    const fileInput = document.getElementById("file-input");
+                    const dropZone = document.getElementById("drop-zone");
+                    const selectedImages = document.getElementById("selected-images");
+                    const selectButton = document.getElementById("select-button");
+                    const selectedFilesCount = document.getElementById(
+                        "selected-files-count"
+                    );
+
+                    if (fileInput) {
                         fileInput.addEventListener("change", handleFiles);
                         dropZone.addEventListener("dragover", handleDragOver);
                         dropZone.addEventListener("dragleave", handleDragLeave);
@@ -133,6 +132,7 @@ jQuery(document).ready(function ($) {
                             const fileList = this.files;
                             displayImages(fileList);
                         }
+
                         function handleDragOver(event) {
                             event.preventDefault();
                             dropZone.classList.add("border-blue-500");
@@ -206,8 +206,7 @@ jQuery(document).ready(function ($) {
                                 selectedFilesCount.textContent = `${count} مورد انتخاب شده`;
                             } else if (limited) {
                                 selectedFilesCount.textContent = `نمیتوان بیشتر از ${limited} مورد انتخاب کرد`;
-                            }
-                            else {
+                            } else {
                                 selectedFilesCount.textContent = "";
                             }
                         }

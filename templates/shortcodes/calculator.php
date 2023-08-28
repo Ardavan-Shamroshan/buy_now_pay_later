@@ -1,5 +1,5 @@
 <div id="bnpl-container" class="my-2">
-    <input type="hidden" name="themedoni_bnpl_order_total" value="">
+    <input type="hidden" name="themedoni_bnpl_order_total" value="<?= $product->get_price() ?>">
     <div class="relative px-6 py-5 overflow-hidden isolate lg:overflow-visible lg:px-0">
 
         <div id="loader" role="status" class="absolute hidden -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
@@ -47,12 +47,13 @@
                             <div class="w-full gap-6 flex flex-row justify-between items-center">
                                 <p class="text-base font-semibold leading-7 text-indigo-600">مبلغ سفارش:</p>
                                 <p class="font-bold">
-                                    <bdi><?= priceFormat( 100 ) ?><span class="woocommerce-Price-currencySymbol"><?= get_woocommerce_currencies()[ get_woocommerce_currency() ] ?></span></bdi>
+                                    <bdi><?= priceFormat( $product->get_price() ) ?><span class="woocommerce-Price-currencySymbol"><?= get_woocommerce_currencies()[ get_woocommerce_currency() ] ?></span></bdi>
                                 </p>
                             </div>
 
                             <ul class="flex flex-wrap flex-row w-full gap-2 mt-2">
 								<?php
+
 								$i = - 1;
 								if ( $this->cheque_conditions ) :
 									foreach ( $this->cheque_conditions as $condition ) :

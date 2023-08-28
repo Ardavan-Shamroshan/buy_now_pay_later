@@ -21,15 +21,11 @@ class ShortCodeController extends BaseController {
 			return;
 		}
 
-		$this->cheque_conditions = get_option('themedoni_buy_now_pay_later_cheque_conditions');
+		$this->cheque_conditions = get_option( 'themedoni_buy_now_pay_later_cheque_conditions' );
 
 		$this->add_bnpl_calculator_shortcode();
 
-		/**
-		 * Hook: woocommerce_before_single_product.
-		 *
-		 * @hooked wc_print_notices - 10
-		 */
+
 		add_action( 'woocommerce_after_add_to_cart_form', function () {
 			do_shortcode( '[themedoni-bnpl-calculator]' );
 		}, 20 );
@@ -39,12 +35,12 @@ class ShortCodeController extends BaseController {
 		add_shortcode( 'themedoni-bnpl-calculator', [ $this, 'bnpl_calculator_form' ] );
 	}
 
-	public function bnpl_calculator_form() {
-		extract( [ $this->cheque_conditions ] );
-		require_once $this->plugin_path . '/templates/shortcodes/calculator.php';
 
-		// load js file only when form loaded
-		// echo "<script src=\"$this->plugin_url/assets/form.js\"></script>";
+	public function bnpl_calculator_form() {
+		global $product;
+		extract( [ $this->cheque_conditions, $product ] );
+		require_once $this->plugin_path . '/templates/shortcodes/calculator.php';
 	}
+
 
 }
