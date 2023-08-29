@@ -18,8 +18,8 @@
     max-width: 30rem;
 }
 
-.themedoni-output-wrapper,
-.themedoni-input-wrapper {
+.bnpl-output-wrapper,
+.bnpl-input-wrapper {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
@@ -42,21 +42,21 @@
     display: none;
 }
 
-.themedoni-heading {
+.bnpl-heading {
     margin-top: 0 !important;
     margin-bottom: 40px !important;
 }
 
-.themedoni-checkbox:checked,
-.themedoni-checkbox:not(:checked) {
+.bnpl-checkbox:checked,
+.bnpl-checkbox:not(:checked) {
     display: none;
     width: 0;
     height: 0;
     visibility: hidden;
 }
 
-.themedoni-checkbox:checked+label,
-.themedoni-checkbox:not(:checked)+label {
+.bnpl-checkbox:checked + label,
+.bnpl-checkbox:not(:checked) + label {
     position: relative;
     display: inline-block;
     padding: 10px 20px;
@@ -72,21 +72,21 @@
     transition: all 300ms linear;
 }
 
-.themedoni-checkbox:not(:checked)+label {
+.bnpl-checkbox:not(:checked) + label {
     color: rgb(35, 65, 125);
     background-color: #fff;
     border: 1px solid rgb(157, 171, 197);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
 }
 
-.themedoni-checkbox:checked+label {
+.bnpl-checkbox:checked + label {
     border: 1px solid rgb(8, 161, 93);
     background-color: rgb(233, 248, 239);
     color: rgb(8, 161, 93);
     box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
-.themedoni-checkbox:not(:checked)+label:hover {
+.bnpl-checkbox:not(:checked) + label:hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
@@ -94,7 +94,7 @@
     text-wrap: nowrap;
 }
 
-.themedoni-cheque-info {
+.bnpl-cheque-info {
     display: flex;
     flex-wrap: wrap;
     box-sizing: border-box;
@@ -121,14 +121,14 @@
     }
 }
 
-.themedoni-cheque-info ul {
+.bnpl-cheque-info ul {
     padding: 0;
     margin: 0;
     list-style: none;
     margin-bottom: 40px;
 }
 
-.themedoni-cheque-info ul li {
+.bnpl-cheque-info ul li {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -138,10 +138,11 @@
     border-bottom: 1px dashed #eee;
 }
 
-.themedoni-cheque-info img {
+.bnpl-cheque-info img {
     max-width: 100%;
 }
-.themedoni-cheque-row {
+
+.bnpl-cheque-row {
     display: flex;
     flex-wrap: wrap;
 }
@@ -161,8 +162,8 @@
     padding: 10px 20px;
 }
 
-.themedoni-output-wrapper,
-.themedoni-input-wrapper {
+.bnpl-output-wrapper,
+.bnpl-input-wrapper {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
@@ -192,21 +193,21 @@
     }
 }
 
-.themedoni-heading {
+.bnpl-heading {
     margin-top: 0 !important;
     margin-bottom: 40px !important;
 }
 
-.themedoni-checkbox:checked,
-.themedoni-checkbox:not(:checked) {
+.bnpl-checkbox:checked,
+.bnpl-checkbox:not(:checked) {
     display: none;
     width: 0;
     height: 0;
     visibility: hidden;
 }
 
-.themedoni-checkbox:checked+label,
-.themedoni-checkbox:not(:checked)+label {
+.bnpl-checkbox:checked + label,
+.bnpl-checkbox:not(:checked) + label {
     position: relative;
     display: inline-block;
     padding: 10px 20px;
@@ -222,26 +223,26 @@
     transition: all 300ms linear;
 }
 
-.themedoni-checkbox:not(:checked)+label {
+.bnpl-checkbox:not(:checked) + label {
     color: rgb(35, 65, 125);
     background-color: #fff;
     border: 1px solid rgb(157, 171, 197);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
 }
 
-.themedoni-checkbox:checked+label {
+.bnpl-checkbox:checked + label {
     border: 1px solid rgb(8, 161, 93);
     background-color: rgb(233, 248, 239);
     color: rgb(8, 161, 93);
     box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
-.themedoni-checkbox:not(:checked)+label:hover {
+.bnpl-checkbox:not(:checked) + label:hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 
-.themedoni-btn {
+.bnpl-btn {
     display: inline-block !important;
     cursor: pointer;
     font-weight: 500 !important;
@@ -260,7 +261,7 @@
     margin-right: 32px;
 }
 
-.field-row .themedoni-input {
+.field-row .bnpl-input {
     display: block;
     clear: both;
     width: 100%;
@@ -270,8 +271,8 @@
     margin-bottom: 20px;
 }
 
-.field-row .themedoni-input:focus,
-.field-row .themedoni-input:focus-visible {
+.field-row .bnpl-input:focus,
+.field-row .bnpl-input:focus-visible {
     border-color: #454cad;
     outline: none;
 }
@@ -349,7 +350,7 @@
     margin-bottom: 20px;
 }
 
-.themedoni-upload-images-thumbnail {
+.bnpl-upload-images-thumbnail {
     max-height: 180px;
     width: 100%;
     border-radius: 6px;
@@ -357,7 +358,7 @@
     border: 1px solid #f9f9f9;
 }
 
-.themedoni-upload-images-pbar {
+.bnpl-upload-images-pbar {
     display: none;
     position: absolute;
     right: 0;
@@ -365,12 +366,12 @@
     left: 0;
 }
 
-.themedoni-upload-images-pbarin {
+.bnpl-upload-images-pbarin {
     height: 2px;
     background: darkgreen;
 }
 
-.themedoni-upload-images-delete {
+.bnpl-upload-images-delete {
     position: absolute;
     left: 0;
     top: 0;
@@ -387,21 +388,52 @@
     text-align: center;
 }
 
-.themedoni-upload-ok .themedoni-upload-images-pbar {
+.bnpl-upload-ok .bnpl-upload-images-pbar {
     display: none;
 }
 
-.themedoni-upload-ok .themedoni-upload-images-thumbnail {
+.bnpl-upload-ok .bnpl-upload-images-thumbnail {
     border-color: darkgreen;
 }
 
-.themedoni-upload-delete-pending .themedoni-upload-images-thumbnail {
+.bnpl-upload-delete-pending .bnpl-upload-images-thumbnail {
     border-color: darkred;
 }
 
-.themedoni-upload-delete-pending .themedoni-upload-images-delete {
+.bnpl-upload-delete-pending .bnpl-upload-images-delete {
     animation: spin 2s linear infinite;
 }
+
+#selected-files-count.bnpl-error {
+    margin-top: 16px;
+    background-color: #ff676717;
+    border: 1px solid #ffa7a7;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-weight: bold;
+    color: #ff4747
+}
+
+#selected-files-count.bnpl-success {
+    margin-top: 16px;
+    background-color: #67ff9d17;
+    border: 1px solid #8bcc95;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-weight: bold;
+    color: #32b35e;
+}
+
+#selected-files-count.bnpl-notice {
+    margin-top: 16px;
+    background-color: hsl(47, 83%, 91%);
+    border: 1px solid hsl(47deg 85.85% 74.97%);
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-weight: bold;
+    color: #61666a;
+}
+
 
 .submit-wrapper {
     display: flex;
@@ -409,6 +441,23 @@
     justify-content: end;
     margin-top: 60px;
     margin-left: 10px;
+}
+
+#notice-message {
+    margin-top: 16px;
+    background-color: hsl(47, 83%, 91%);
+    border: 1px solid hsl(47deg 85.85% 74.97%);
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-weight: bold;
+    color: #61666a;
+}
+
+#notice-message-svg-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
 }
 
 @keyframes spin {

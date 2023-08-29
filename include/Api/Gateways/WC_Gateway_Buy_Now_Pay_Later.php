@@ -3,12 +3,12 @@
 use Inc\Api\Callbacks\GatewayCallbacks;
 use Inc\Api\Callbacks\OptionsPaymentGatewayCallback;
 
-function init_themedoni_buy_now_pay_later() {
-	add_filter( 'woocommerce_payment_gateways', 'WC_Add_Themedoni_Buy_Now_Pay_Later', 10, 1 );
+function init_buy_now_pay_later() {
+	add_filter( 'woocommerce_payment_gateways', 'WC_Add_Buy_Now_Pay_Later', 10, 1 );
 
-	function WC_Add_Themedoni_Buy_Now_Pay_Later( $methods ) {
+	function WC_Add_Buy_Now_Pay_Later( $methods ) {
 
-		$methods[] = 'WC_Gateway_Themedoni_Buy_Now_Pay_Later';
+		$methods[] = 'WC_Gateway_Buy_Now_Pay_Later';
 
 		return $methods;
 	}
@@ -24,6 +24,15 @@ function init_themedoni_buy_now_pay_later() {
 		return $currencies;
 	}
 
+	add_filter( 'woocommerce_available_payment_gateways', 'bbloomer_paypal_disable_manager' );
+
+	function bbloomer_paypal_disable_manager( $available_gateways ) {
+		if ( isset( $available_gateways['WC_Gateway_Buy_Now_Pay_Later'] ) && !is_user_logged_in() ) {
+			unset( $available_gateways['WC_Gateway_Buy_Now_Pay_Later'] );
+		}
+		return $available_gateways;
+	}
+
 	/**
 	 * Set a minimum order amount for checkout
 	 */
@@ -32,7 +41,7 @@ function init_themedoni_buy_now_pay_later() {
 
 	function wc_minimum_order_amount() {
 		// Set this variable to specify a minimum order value
-		$minimum = get_option( 'woocommerce_WC_Gateway_Themedoni_Buy_Now_Pay_Later_settings' )['min_purchase'] ?? 0;
+		$minimum = get_option( 'woocommerce_WC_Gateway_Buy_Now_Pay_Later_settings' )['min_purchase'] ?? 0;
 
 		if ( WC()->cart->total < $minimum ) {
 			if ( is_cart() ) {
@@ -57,8 +66,7 @@ function init_themedoni_buy_now_pay_later() {
 		}
 	}
 
-
-	class WC_Gateway_Themedoni_Buy_Now_Pay_Later extends WC_Payment_Gateway {
+	class WC_Gateway_Buy_Now_Pay_Later extends WC_Payment_Gateway {
 		public $gateway_callbacks;
 		public $options_payment_gateway_callbacks;
 		public $rules;
@@ -87,10 +95,10 @@ function init_themedoni_buy_now_pay_later() {
 			$this->gateway_callbacks                 = new GatewayCallbacks;
 			$this->options_payment_gateway_callbacks = new OptionsPaymentGatewayCallback();
 
-			$this->id                 = 'WC_Gateway_Themedoni_Buy_Now_Pay_Later';
+			$this->id                 = 'WC_Gateway_Buy_Now_Pay_Later';
 			$this->method_title       = __( 'پرداخت با چک پیشرفته' );
 			$this->method_description = __( 'تنظیمات درگاه پرداخت با چک پیشرفته برای افزونه فروشگاه ساز ووکامرس' );
-			$this->icon               = apply_filters( 'WC_Gateway_Themedoni_Buy_Now_Pay_Later_logo', BNPL_URL . '/assets/images/cheque_32.png', __FILE__ );
+			$this->icon               = apply_filters( 'WC_Gateway_Buy_Now_Pay_Later_logo', BNPL_URL . '/assets/images/cheque_32.png', __FILE__ );
 			$this->has_fields         = true;
 
 			// These are options you’ll show in admin on your gateway settings page and make use of the WC Settings API.
@@ -100,10 +108,10 @@ function init_themedoni_buy_now_pay_later() {
 			$this->title       = $this->settings['title'];
 			$this->description = $this->settings['description'];
 
-			$this->rules = get_option( 'themedoni_buy_now_pay_later_rules' );
+			$this->rules = get_option( 'buy_now_pay_later_rules' );
 
 			$this->cheque_conditions = get_option(
-				'themedoni_buy_now_pay_later_cheque_conditions',
+				'buy_now_pay_later_cheque_conditions',
 				[
 					[
 						'condition_name'       => $this->get_option( 'condition_name' ),
@@ -116,7 +124,7 @@ function init_themedoni_buy_now_pay_later() {
 			);
 
 			$this->extra_fields = get_option(
-				'themedoni_buy_now_pay_later_extra_fields',
+				'buy_now_pay_later_extra_fields',
 				[
 					[
 						'field_name' => $this->get_option( 'field_name' ),
@@ -138,7 +146,7 @@ function init_themedoni_buy_now_pay_later() {
 
 		public function init_form_fields() {
 			$this->form_fields = apply_filters(
-				'WC_Gateway_Themedoni_Buy_Now_Pay_Later_Config',
+				'WC_Gateway_Buy_Now_Pay_Later_Config',
 				[
 					'enabled'           => [
 						'title'       => __( 'فعالسازی/غیرفعالسازی' ),
@@ -209,13 +217,13 @@ function init_themedoni_buy_now_pay_later() {
 			?>
 
             <tr>
-                <th scope="row" class="titledesc"><?php esc_html_e( 'قوانین:', 'themedoni' ); ?></th>
+                <th scope="row" class="titledesc"><?php esc_html_e( 'قوانین:', 'bnpl' ); ?></th>
                 <td class="forminp">
                     <div class="wc_input_table_wrapper">
 						<?php
 						$content = html_entity_decode( $this->rules ) ?? '';
-						wp_editor( $content, 'themedoni_bnpl_rules', [
-							'textarea_name' => 'themedoni_bnpl_rules',
+						wp_editor( $content, 'bnpl_rules', [
+							'textarea_name' => 'bnpl_rules',
 							'textarea_rows' => 10
 						] );
 						?>
@@ -238,18 +246,18 @@ function init_themedoni_buy_now_pay_later() {
 
 			?>
             <tr>
-                <th scope="row" class="titledesc"><?php esc_html_e( 'شرایط چک ها:', 'themedoni' ); ?></th>
-                <td class="forminp" id="themedoni_bnpl_cheque_condition">
+                <th scope="row" class="titledesc"><?php esc_html_e( 'شرایط چک ها:', 'bnpl' ); ?></th>
+                <td class="forminp" id="bnpl_cheque_condition">
                     <div class="wc_input_table_wrapper">
                         <table class="widefat wc_input_table sortable" cellspacing="0">
                             <thead>
                             <tr>
                                 <th class="sort">&nbsp;</th>
-                                <th><?php esc_html_e( 'نام شرط', 'themedoni' ); ?></th>
-                                <th><?php esc_html_e( 'پیش پرداخت (درصد)', 'themedoni' ); ?></th>
-                                <th><?php esc_html_e( 'اقساط', 'themedoni' ); ?></th>
-                                <th><?php esc_html_e( 'مدت اقساط (به روز)', 'themedoni' ); ?></th>
-                                <th><?php esc_html_e( 'نرخ کارمزد (درصد)', 'themedoni' ); ?></th>
+                                <th><?php esc_html_e( 'نام شرط', 'bnpl' ); ?></th>
+                                <th><?php esc_html_e( 'پیش پرداخت (درصد)', 'bnpl' ); ?></th>
+                                <th><?php esc_html_e( 'اقساط', 'bnpl' ); ?></th>
+                                <th><?php esc_html_e( 'مدت اقساط (به روز)', 'bnpl' ); ?></th>
+                                <th><?php esc_html_e( 'نرخ کارمزد (درصد)', 'bnpl' ); ?></th>
                             </tr>
                             </thead>
                             <tbody class="accounts">
@@ -261,11 +269,11 @@ function init_themedoni_buy_now_pay_later() {
 
 									echo '<tr class="account">
                                             <td class="sort"></td>
-                                            <td><input type="text" value="' . esc_attr( $condition['condition_name'] ) . '" name="themedoni_bnpl_condition_name[' . esc_attr( $i ) . ']" placeholder="سه ماهه" /></td>
-                                            <td><input type="number" value="' . esc_attr( $condition['prepayment'] ) . '" name="themedoni_bnpl_prepayment[' . esc_attr( $i ) . ']" placeholder="10" /></td>
-                                            <td><input type="number" value="' . esc_attr( $condition['installments'] ) . '" name="themedoni_bnpl_installments[' . esc_attr( $i ) . ']" placeholder="1" /></td>
-                                            <td><input type="number" value="' . esc_attr( $condition['term_of_installments'] ) . '" name="themedoni_bnpl_term_of_installments[' . esc_attr( $i ) . ']" placeholder="90" /></td>
-                                            <td><input type="number" value="' . esc_attr( $condition['commission_rate'] ) . '" name="themedoni_bnpl_commission_rate[' . esc_attr( $i ) . ']" placeholder="12" /></td>
+                                            <td><input type="text" value="' . esc_attr( $condition['condition_name'] ) . '" name="bnpl_condition_name[' . esc_attr( $i ) . ']" placeholder="سه ماهه" /></td>
+                                            <td><input type="number" value="' . esc_attr( $condition['prepayment'] ) . '" name="bnpl_prepayment[' . esc_attr( $i ) . ']" placeholder="10" /></td>
+                                            <td><input type="number" value="' . esc_attr( $condition['installments'] ) . '" name="bnpl_installments[' . esc_attr( $i ) . ']" placeholder="1" /></td>
+                                            <td><input type="number" value="' . esc_attr( $condition['term_of_installments'] ) . '" name="bnpl_term_of_installments[' . esc_attr( $i ) . ']" placeholder="90" /></td>
+                                            <td><input type="number" value="' . esc_attr( $condition['commission_rate'] ) . '" name="bnpl_commission_rate[' . esc_attr( $i ) . ']" placeholder="12" /></td>
                                         </tr>';
 								}
 							}
@@ -273,25 +281,25 @@ function init_themedoni_buy_now_pay_later() {
                             </tbody>
                             <tfoot>
                             <tr>
-                                <th colspan="7"><a href="#" class="add button"><?php esc_html_e( '+ افزودن شرایط', 'themedoni' ); ?></a> <a href="#" class="remove_rows button"><?php esc_html_e( 'حذف شرایط انتخابی', 'themedoni' ); ?></a></th>
+                                <th colspan="7"><a href="#" class="add button"><?php esc_html_e( '+ افزودن شرایط', 'bnpl' ); ?></a> <a href="#" class="remove_rows button"><?php esc_html_e( 'حذف شرایط انتخابی', 'bnpl' ); ?></a></th>
                             </tr>
                             </tfoot>
                         </table>
                     </div>
                     <script type="text/javascript">
                         jQuery(function () {
-                            jQuery('#themedoni_bnpl_cheque_condition').on('click', 'a.add', function () {
+                            jQuery('#bnpl_cheque_condition').on('click', 'a.add', function () {
 
-                                var size = jQuery('#themedoni_bnpl_cheque_condition').find('tbody .account').length;
+                                var size = jQuery('#bnpl_cheque_condition').find('tbody .account').length;
 
                                 jQuery('<tr class="account">\
 									<td class="sort"></td>\
-									<td><input type="text" name="themedoni_bnpl_condition_name[' + size + ']" placeholder="سه ماهه"/></td>\
-									<td><input type="number" name="themedoni_bnpl_prepayment[' + size + ']" placeholder="10"/></td>\
-									<td><input type="number" name="themedoni_bnpl_installments[' + size + ']" placeholder="1"/></td>\
-									<td><input type="number" name="themedoni_bnpl_term_of_installments[' + size + ']" placeholder="90"/></td>\
-									<td><input type="number" name="themedoni_bnpl_commission_rate[' + size + ']" placeholder="12"/></td>\
-								</tr>').appendTo('#themedoni_bnpl_cheque_condition table tbody');
+									<td><input type="text" name="bnpl_condition_name[' + size + ']" placeholder="سه ماهه"/></td>\
+									<td><input type="number" name="bnpl_prepayment[' + size + ']" placeholder="10"/></td>\
+									<td><input type="number" name="bnpl_installments[' + size + ']" placeholder="1"/></td>\
+									<td><input type="number" name="bnpl_term_of_installments[' + size + ']" placeholder="90"/></td>\
+									<td><input type="number" name="bnpl_commission_rate[' + size + ']" placeholder="12"/></td>\
+								</tr>').appendTo('#bnpl_cheque_condition table tbody');
 
                                 return false;
                             });
@@ -314,16 +322,16 @@ function init_themedoni_buy_now_pay_later() {
 
 			?>
             <tr>
-                <th scope="row" class="titledesc"><?php esc_html_e( 'فیلدهای اضافی:', 'themedoni' ); ?></th>
-                <td class="forminp" id="themedoni_bnpl_extra_fields">
+                <th scope="row" class="titledesc"><?php esc_html_e( 'فیلدهای اضافی:', 'bnpl' ); ?></th>
+                <td class="forminp" id="bnpl_extra_fields">
                     <div class="wc_input_table_wrapper">
                         <table class="widefat wc_input_table sortable">
                             <thead>
                             <tr>
                                 <th class="sort">&nbsp;</th>
-                                <th><?php esc_html_e( 'نام فیلد', 'themedoni' ); ?></th>
-                                <th><?php esc_html_e( 'آیدی فیلد', 'themedoni' ); ?></th>
-                                <th><?php esc_html_e( 'نوع فیلد', 'themedoni' ); ?></th>
+                                <th><?php esc_html_e( 'نام فیلد', 'bnpl' ); ?></th>
+                                <th><?php esc_html_e( 'آیدی فیلد', 'bnpl' ); ?></th>
+                                <th><?php esc_html_e( 'نوع فیلد', 'bnpl' ); ?></th>
                             </tr>
                             </thead>
                             <tbody class="accounts">
@@ -337,10 +345,10 @@ function init_themedoni_buy_now_pay_later() {
 									?>
                                     <tr class="account">
                                         <td class="sort"></td>
-                                        <td><input type="text" value="<?= esc_attr( $field['field_name'] ) ?>" name="themedoni_bnpl_field_name['<?= esc_attr( $i ) ?>']" placeholder="کدملی"/></td>
-                                        <td><input type="text" value="<?= esc_attr( $field['field_id'] ) ?>" name="themedoni_bnpl_field_id['<?= esc_attr( $i ) ?>']" placeholder="national_code"/></td>
+                                        <td><input type="text" value="<?= esc_attr( $field['field_name'] ) ?>" name="bnpl_field_name['<?= esc_attr( $i ) ?>']" placeholder="کدملی"/></td>
+                                        <td><input type="text" value="<?= esc_attr( $field['field_id'] ) ?>" name="bnpl_field_id['<?= esc_attr( $i ) ?>']" placeholder="national_code"/></td>
                                         <td>
-                                            <select name="themedoni_bnpl_field_type['<?= esc_attr( $i ) ?>']">
+                                            <select name="bnpl_field_type['<?= esc_attr( $i ) ?>']">
                                                 <option value="text" <?= $field['field_type'] == 'text' ? 'selected' : '' ?>>متنی</option>
                                                 <option value="number" <?= $field['field_type'] == 'number' ? 'selected' : '' ?>>عددی</option>
                                                 <option value="file" <?= $field['field_type'] == 'file' ? 'selected' : '' ?>>آپلود فایل</option>
@@ -354,23 +362,23 @@ function init_themedoni_buy_now_pay_later() {
                             </tbody>
                             <tfoot>
                             <tr>
-                                <th colspan="7"><a href="#" class="add button"><?php esc_html_e( '+ افزودن فیلد', 'themedoni' ); ?></a> <a href="#" class="remove_rows button"><?php esc_html_e( 'حذف فیلدهای انتخابی', 'themedoni' ); ?></a></th>
+                                <th colspan="7"><a href="#" class="add button"><?php esc_html_e( '+ افزودن فیلد', 'bnpl' ); ?></a> <a href="#" class="remove_rows button"><?php esc_html_e( 'حذف فیلدهای انتخابی', 'bnpl' ); ?></a></th>
                             </tr>
                             </tfoot>
                         </table>
                     </div>
                     <script type="text/javascript">
                         jQuery(function () {
-                            jQuery('#themedoni_bnpl_extra_fields').on('click', 'a.add', function () {
+                            jQuery('#bnpl_extra_fields').on('click', 'a.add', function () {
 
-                                var size = jQuery('#themedoni_bnpl_extra_fields').find('tbody .account').length;
+                                var size = jQuery('#bnpl_extra_fields').find('tbody .account').length;
 
                                 jQuery('<tr class="account">\
 									<td class="sort"></td>\
-									<td><input type="text" name="themedoni_bnpl_field_name[' + size + ']" placeholder="کدملی"/></td>\
-									<td><input type="text" name="themedoni_bnpl_field_id[' + size + ']" placeholder="national_code"/></td>\
-									<td><select name="themedoni_bnpl_field_type[' + size + ']"><option value="text">متنی</option><option value="number">عددی</option><option value="file">آپلود فایل</option></td></select>\
-								</tr>').appendTo('#themedoni_bnpl_extra_fields table tbody');
+									<td><input type="text" name="bnpl_field_name[' + size + ']" placeholder="کدملی"/></td>\
+									<td><input type="text" name="bnpl_field_id[' + size + ']" placeholder="national_code"/></td>\
+									<td><select name="bnpl_field_type[' + size + ']"><option value="text">متنی</option><option value="number">عددی</option><option value="file">آپلود فایل</option></td></select>\
+								</tr>').appendTo('#bnpl_extra_fields table tbody');
 
                                 return false;
                             });
@@ -384,7 +392,7 @@ function init_themedoni_buy_now_pay_later() {
 
 		public function redirect_to_cheque_payment_page( $order_id ) {
 			$order = new WC_Order( $order_id );
-			if ( isset( $_POST['themedoni_bnpl_submit'] ) ) {
+			if ( isset( $_POST['bnpl_submit'] ) ) {
 				$result = $this->gateway_callbacks->redirect_to_cheque_payment_page( $order_id, $this->extra_fields );
 				if ( $result ) {
 					wp_redirect( add_query_arg( 'wc_status', 'success', $this->get_return_url( $order ) ) );

@@ -1,10 +1,5 @@
 window.addEventListener('load', function () {
 
-    // ClassicEditor
-    //     .create( document.querySelector( '#woocommerce_WC_Gateway_Themedoni_Buy_Now_Pay_Later_rules' ) )
-    //     .catch( error => {
-    //         console.error( error );
-    //     } );
 
     // store tabs variables
     let tabs = document.querySelectorAll('ul.nav-tabs > li');

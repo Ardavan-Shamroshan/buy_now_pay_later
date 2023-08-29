@@ -1,11 +1,11 @@
 jQuery(document).ready(function ($) {
     console.log();
 
-    let order_total = $('input[name="themedoni_bnpl_order_total"]').val();
+    let order_total = $('input[name="bnpl_order_total"]').val();
     $("#bnpl-container #rules ul").addClass("list-disc text-slate-500");
 
 
-    let checked_input = $('input[name="themedoni_bnpl_order_condition_name"]:checked').val();
+    let checked_input = $('input[name="bnpl_order_condition_name"]:checked').val();
     if (typeof checked_input != 'undefined') {
         $(document)
             .ajaxStart(function () {
@@ -21,13 +21,13 @@ jQuery(document).ready(function ($) {
     }
 
 
-    $('input[name="themedoni_bnpl_order_condition_name"]').on(
+    $('input[name="bnpl_order_condition_name"]').on(
         "click",
         function (event) {
             event.stopPropagation();
 
             let installment_name = $(
-                'input[name="themedoni_bnpl_order_condition_name"]:checked'
+                'input[name="bnpl_order_condition_name"]:checked'
             ).val();
 
             $(document)
@@ -52,7 +52,7 @@ jQuery(document).ready(function ($) {
                 action: "bnpl_get_data",
                 name: installment_name,
                 orderTotal: order_total,
-                nonce: ajax_obj.nonce,
+                // nonce: ajax_obj.nonce,
             },
             success: function (response) {
                 response = JSON.parse(response);
@@ -155,7 +155,6 @@ jQuery(document).ready(function ($) {
 
                         function displayImages(fileList) {
                             if (!(fileList.length > JSON.parse(response.response.installments))) {
-
                                 selectedImages.innerHTML = "";
                                 for (const file of fileList) {
                                     const imageWrapper = document.createElement("div");
@@ -203,10 +202,19 @@ jQuery(document).ready(function ($) {
 
                             const count = selectedImages.children.length;
                             if (count > 0) {
+                                selectedFilesCount.classList.remove('bnpl-error')
+                                selectedFilesCount.classList.add('bnpl-success')
+
                                 selectedFilesCount.textContent = `${count} مورد انتخاب شده`;
+
                             } else if (limited) {
+                                selectedFilesCount.classList.remove('bnpl-success')
+                                selectedFilesCount.classList.add('bnpl-error')
+
                                 selectedFilesCount.textContent = `نمیتوان بیشتر از ${limited} مورد انتخاب کرد`;
                             } else {
+                                selectedFilesCount.classList.remove('bnpl-error')
+                                selectedFilesCount.classList.remove('bnpl-success')
                                 selectedFilesCount.textContent = "";
                             }
                         }
