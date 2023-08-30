@@ -100,9 +100,11 @@ jQuery(document).ready(function ($) {
                             " تومان "
                         );
 
-                        let result = today.setDate(today.getDate() + daysToAdd);
+                        let result = today.setDate(today.getDate());
                         let mydate = new Date(result);
                         let mypersiandate = mydate.toLocaleDateString("fa-IR");
+                        result = today.setDate(today.getDate() + daysToAdd);
+
                         $(
                             '<div class="flex flex-row justify-between items-center"><p class="text-base font-semibold leading-7 text-indigo-600"> تاریخ چک ' +
                             toFarsiNumber(counter) +

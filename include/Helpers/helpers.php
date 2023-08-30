@@ -46,9 +46,10 @@ function convertEnglishToPersian( $number ) {
 	return $number;
 }
 
-function priceFormat( $price) {
+function priceFormat( $price ) {
 	$price = number_format( $price, 0, '/', ',' );
 	$price = convertEnglishToPersian( $price );
+
 	// $price .= ' تومان';
 
 	return $price;
@@ -104,6 +105,19 @@ function validateNationalCode( $nationalCode ) {
 		} else {
 			return false;
 		}
+	}
+}
+
+function alert( $message, $type = 'success' ) {
+	extract( [$message] );
+	if ( $type == 'success' ) {
+		include_once BNPL_PATH . '/templates/alerts/success.php';
+	} elseif ( $type == 'error' ) {
+		include_once BNPL_PATH . '/templates/alerts/error.php';
+	} elseif ( $type == 'notice' ) {
+		include_once BNPL_PATH . '/templates/alerts/notice.php';
+	} else {
+		include_once BNPL_PATH . '/templates/alerts/success.php';
 	}
 }
 

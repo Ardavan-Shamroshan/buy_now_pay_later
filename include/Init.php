@@ -24,7 +24,6 @@ final class Init {
 	 */
 	public static function get_services(): array {
 		return [
-			Pages\Dashboard::class,
 			Base\Enqueue::class,
 			Base\SettingsLink::class,
 

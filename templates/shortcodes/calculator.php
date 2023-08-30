@@ -1,5 +1,5 @@
 <div id="bnpl-container" class="my-2">
-    <input type="hidden" name="themedoni_bnpl_order_total" value="<?= $product->get_price() ?>">
+    <input type="hidden" name="bnpl_order_total" value="<?= $product->get_price() ?>">
     <div class="relative px-6 py-5 overflow-hidden isolate lg:overflow-visible lg:px-0">
 
         <div id="loader" role="status" class="absolute hidden -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
@@ -60,8 +60,8 @@
 										$i ++;
 										?>
                                         <li>
-                                            <input type="radio" id="themedoni_bnpl_order_condition_name[<?= esc_attr( $i ) ?>]" name="themedoni_bnpl_order_condition_name" value="<?= esc_attr( $condition['condition_name'] ) ?>" class="hidden peer" required <?= ( $i == 0 ) ? 'checked' : '' ?>>
-                                            <label for="themedoni_bnpl_order_condition_name[<?= esc_attr( $i ) ?>]"
+                                            <input type="radio" id="bnpl_order_condition_name[<?= esc_attr( $i ) ?>]" name="bnpl_order_condition_name" value="<?= esc_attr( $condition['condition_name'] ) ?>" class="hidden peer" required <?= ( $i == 0 ) ? 'checked' : '' ?>>
+                                            <label for="bnpl_order_condition_name[<?= esc_attr( $i ) ?>]"
                                                    class="font-bold w-full py-2 px-10 text-center shadow text-indigo-600 bg-white border border-indigo-600 rounded-sm cursor-pointer peer-checked:border-green-600 peer-checked:bg-green-50 peer-checked:text-green-600 hover:text-green-600 hover:border-green-600 hover:bg-green-100"
                                                    style="border: 1px solid rgb(157, 171, 197)"><?= esc_attr( $condition['condition_name'] ) ?></label>
                                         </li>

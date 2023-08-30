@@ -14,13 +14,12 @@ class BaseController {
 		$this->plugin      = plugin_basename( dirname( __FILE__, 3 ) . '/buyNowPayLater.php' );
 
 		// settings manager for dynamically create custom checkbox fields
-		$this->setting_managers = [
-			'cpt_manager'         => __( 'مدیریت نوع پست های اختصاصی' ),
-		];
+		$this->setting_managers = [];
 	}
 
 	public function activated( string $option_name ) {
-		$option = get_option( 'themedoni_buy_now_pay_later' );
+		$option = get_option( 'buy_now_pay_later' );
+
 		// if there was an option with the option_name ($option), then if there was an option with option_name value check the checkbox
 		return $option && $option[ $option_name ];
 	}

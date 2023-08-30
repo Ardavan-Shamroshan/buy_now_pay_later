@@ -30,7 +30,7 @@ class OrderMetaBoxController extends BaseController
 	{
 		$order = wc_get_order($post->ID); // Get the WC_Order object
 		
-		if ($order->get_payment_method() != 'WC_Gateway_Themedoni_Buy_Now_Pay_Later') {
+		if ($order->get_payment_method() != 'WC_Gateway_Buy_Now_Pay_Later') {
 			return;
 		}
 
@@ -42,15 +42,15 @@ class OrderMetaBoxController extends BaseController
 
 		$order = wc_get_order($post->ID); // Get the WC_Order object
 
-		$extra_fields      = get_option('themedoni_buy_now_pay_later_extra_fields');
-		$cheque_conditions = get_option('themedoni_buy_now_pay_later_cheque_conditions');
-		$order_extra_fields_value    = get_post_meta($post->ID, 'themedoni_bnpl_extra_fields', true);
-		$order_cheques               = get_post_meta($post->ID, 'themedoni_bnpl_cheque', true);
-		$order_cheque_condition_name = get_post_meta($post->ID, 'themedoni_bnpl_cheque_condition', true);
+		$extra_fields      = get_option('buy_now_pay_later_extra_fields');
+		$cheque_conditions = get_option('buy_now_pay_later_cheque_conditions');
+		$order_extra_fields_value    = get_post_meta($post->ID, 'bnpl_extra_fields', true);
+		$order_cheques               = get_post_meta($post->ID, 'bnpl_cheque', true);
+		$order_cheque_condition_name = get_post_meta($post->ID, 'bnpl_cheque_condition', true)['condition_name'];
+
 
 		$key                    = array_search($order_cheque_condition_name, array_column($cheque_conditions, 'condition_name'));
 		$order_cheque_condition = $cheque_conditions[$key];
-
 		list($final_price, $every_installment_price, $prepayment_price) = $this->gateway_calculator($order->get_total(), $order_cheque_condition);
 
 		extract([$order, $extra_fields, $cheque_conditions, $order_extra_fields_value, $order_cheques, $order_cheque_condition, $final_price, $prepayment_price, $every_installment_price]);

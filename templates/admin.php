@@ -12,8 +12,8 @@
         <div id="tab-1" class="tab-pane active">
             <form action="options.php" method="POST">
 				<?php
-				settings_fields( 'themedoni_buy_now_pay_later_settings' );
-				do_settings_sections('themedoni-buy-now-pay-later' );
+				settings_fields( 'buy_now_pay_later_settings' );
+				do_settings_sections('buy-now-pay-later' );
 				submit_button();
 				?>
             </form>

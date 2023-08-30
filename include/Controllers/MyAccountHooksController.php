@@ -15,14 +15,14 @@ class MyAccountHooksController extends BaseController
 
         $order = wc_get_order($order_id); // Get the WC_Order object
 
-        if ($order->get_payment_method() !== 'WC_Gateway_Themedoni_Buy_Now_Pay_Later')
+        if ($order->get_payment_method() !== 'WC_Gateway_Buy_Now_Pay_Later')
             return;
 
-        $extra_fields      = get_option('themedoni_buy_now_pay_later_extra_fields');
-        $cheque_conditions = get_option('themedoni_buy_now_pay_later_cheque_conditions');
-        $order_extra_fields_value    = get_post_meta($order_id, 'themedoni_bnpl_extra_fields', true);
-        $order_cheques               = get_post_meta($order_id, 'themedoni_bnpl_cheque', true);
-        $order_cheque_condition_name = get_post_meta($order_id, 'themedoni_bnpl_cheque_condition', true);
+        $extra_fields      = get_option('buy_now_pay_later_extra_fields');
+        $cheque_conditions = get_option('buy_now_pay_later_cheque_conditions');
+        $order_extra_fields_value    = get_post_meta($order_id, 'bnpl_extra_fields', true);
+        $order_cheques               = get_post_meta($order_id, 'bnpl_cheque', true);
+        $order_cheque_condition_name = get_post_meta($order_id, 'bnpl_cheque_condition', true)['condition_name'];
 
         $key                    = array_search($order_cheque_condition_name, array_column($cheque_conditions, 'condition_name'));
         $order_cheque_condition = $cheque_conditions[$key];
