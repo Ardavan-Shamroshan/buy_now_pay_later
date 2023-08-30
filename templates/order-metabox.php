@@ -35,7 +35,7 @@
 			$dates = [];
 			for ( $i = 0; $i < $order_cheque_condition['installments']; $i ++ ) :
                 $add_day = $add * $i;
-				$date    = date( 'Y-m-d', strtotime( " + $add_day days" ) );
+				$date    = date( 'Y-m-d', strtotime( $order->get_date_created()." + $add_day days" ) );
 				$dates[] = wc_string_to_datetime($date);
 			endfor;
 			?>
